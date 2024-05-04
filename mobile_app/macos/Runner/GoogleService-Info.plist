@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCnqa1mPmtI1iN4578dlmsGUmocfO_ykow</string>
+	<key>GCM_SENDER_ID</key>
+	<string>203960912563</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.cookHelperMobileApp</string>
+	<key>PROJECT_ID</key>
+	<string>cook-helper-b246c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>cook-helper-b246c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:203960912563:ios:bcc2f98b0c9df864ecbec6</string>
+</dict>
+</plist>
