@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import './login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'login_page.dart';
 import '../ui_settings/ui_colors.dart';
 
 // ホーム画面用Widget
 class HomePage extends StatefulWidget {
+  const HomePage(this.user, {super.key});
+
+  final User user;
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -14,12 +18,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Cook Helper'),
-          backgroundColor: Common.primaryColor,
+          backgroundColor: CommonColors.primaryColor,
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.close),
+              icon: const Icon(Icons.logout),
               onPressed: () async {
-                // ログイン画面に遷移＋チャット画面を破棄
+                // ログアウト処理
+                await FirebaseAuth.instance.signOut();
+                // ログイン画面に遷移，ホーム画面を破棄
                 await Navigator.of(context).pushReplacement(
                   MaterialPageRoute(builder: (context) {
                     return const LoginPage();
@@ -29,6 +35,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
+        body: Center(child: Text("ログイン情報：${widget.user}")),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () async {

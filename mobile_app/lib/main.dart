@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'pages/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'ui_settings/ui_colors.dart';
+import 'view/pages/login_page.dart';
+import 'view/ui_settings/ui_colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cook Helper',
       theme: ThemeData(
-        primarySwatch: Common.primaryColor,
+        primarySwatch: CommonColors.primaryColor,
       ),
       home: const LoginPage(),
     );

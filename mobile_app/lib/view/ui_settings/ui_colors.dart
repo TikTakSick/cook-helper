@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Common {
+class CommonColors {
   static const MaterialColor primaryColor =
       MaterialColor(0xFFC9A99A, <int, Color>{
     50: Color(0xFFF9F5F3),
