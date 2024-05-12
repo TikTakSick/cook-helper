@@ -14,4 +14,18 @@ class Common {
     800: Color(0xFFB58F7E),
     900: Color(0xFFA97E6C),
   });
+
+  static const MaterialColor subprimaryColor =
+      MaterialColor(0xFFC95C43, <int, Color>{
+    50: Color(0xFFF9EBE8),
+    100: Color(0xFFEFCEC7),
+    200: Color(0xFFE4AEA1),
+    300: Color(0xFFD98D7B),
+    400: Color(0xFFD1745F),
+    500: Color(0xFFC95C43),
+    600: Color(0xFFC3543D),
+    700: Color(0xFFBC4A34),
+    800: Color(0xFFB5412C), // use this color as subprimary color of widgets
+    900: Color(0xFFA9301E),
+  });
 }

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Cook Helper',
       theme: ThemeData(
-        primarySwatch: Colors.blue, //Common.primaryColor,
+        primarySwatch: Common.primaryColor,
       ),
       home: const LoginPage(),
     );
