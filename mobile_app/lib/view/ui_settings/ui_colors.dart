@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CommonColors {
+  static const Color textColor = Colors.black;
+  static const Color pageBackgroundColor = Color.fromARGB(255, 248, 237, 216);
+
   static const MaterialColor primaryColor =
       MaterialColor(0xFFC9A99A, <int, Color>{
     50: Color(0xFFF9F5F3),

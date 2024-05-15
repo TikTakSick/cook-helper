@@ -4,7 +4,8 @@ import 'package:gap/gap.dart';
 
 import 'home_page.dart';
 import '../ui_settings/ui_colors.dart';
-import "../ui_settings/ui_button.dart";
+import "../ui_settings/ui_buttonstyles.dart";
+import "../ui_settings/ui_textstyles.dart";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -36,13 +37,13 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title, style: CommonTextStyle.pageTitleTextStyle),
         backgroundColor: CommonColors.primaryColor,
       ),
-      backgroundColor: Colors.white,
       body: Center(
-        child: Container(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +84,8 @@ class _LoginPageState extends State<LoginPage> {
               // ユーザ登録（サインアップ）ボタン
               ElevatedButton(
                 style: AuthButton.style,
-                child: const Text('ユーザ登録（サインアップ）'),
+                child: const Text('ユーザ登録（サインアップ）',
+                    style: CommonTextStyle.elevatedButtonTextStyle),
                 onPressed: () async {
                   try {
                     final User? user = (await FirebaseAuth.instance
@@ -95,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                       // ユーザ登録に成功したので，ホーム画面に遷移する．
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return HomePage(user);
+                          return HomePage();
                         }),
                       );
                     }
@@ -108,7 +110,8 @@ class _LoginPageState extends State<LoginPage> {
               // ログインボタン
               ElevatedButton(
                   style: AuthButton.style,
-                  child: const Text('ログイン'),
+                  child: const Text('ログイン',
+                      style: CommonTextStyle.elevatedButtonTextStyle),
                   onPressed: () async {
                     try {
                       // メール/パスワードでログイン
@@ -121,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                         // ログイン成功したので，ホーム画面に遷移．
                         await Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) {
-                            return HomePage(user);
+                            return HomePage();
                           }),
                         );
                       }
@@ -133,7 +136,8 @@ class _LoginPageState extends State<LoginPage> {
               // パスワードリセットボタン
               ElevatedButton(
                   style: AuthButton.style,
-                  child: const Text('パスワードリセット'),
+                  child: const Text('パスワードリセット',
+                      style: CommonTextStyle.elevatedButtonTextStyle),
                   onPressed: () async {
                     try {
                       await FirebaseAuth.instance
