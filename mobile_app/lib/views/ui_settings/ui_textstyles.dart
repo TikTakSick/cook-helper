@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../ui_settings/ui_colors.dart';
+import 'ui_colors.dart';
 
 class CommonTextStyle {
   // Page TextStyle

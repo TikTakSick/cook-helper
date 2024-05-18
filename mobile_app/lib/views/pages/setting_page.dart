@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import '../ui_settings/ui_colors.dart';
 import '../ui_settings/ui_textstyles.dart';
 import "../ui_settings/ui_buttonstyles.dart";
-import "../../controller/pages/setting_page_controller.dart";
+import "../../controllers/pages/setting_page_controller.dart";
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);

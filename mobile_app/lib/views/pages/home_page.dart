@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../ui_settings/ui_colors.dart';
 import '../ui_settings/ui_textstyles.dart';
-import '../../controller/pages/home_page_controller.dart';
+import '../../controllers/pages/home_page_controller.dart';
+import '../../controllers/user_controller.dart';
 
 // ホーム画面用Widget
-class HomePage extends StatefulWidget {
-  HomePage({super.key});
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key});
 
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  final User user = FirebaseAuth.instance.currentUser!;
-  String pageTitle = "";
-
-  @override
-  void initState() {
-    super.initState();
-    pageTitle = HomePageController().getHomePageTitle();
+  // userNameを元に，userNameを変更する．
+  String getHomePageTitle({required userName}) {
+    if (userName == "") {
+      return "Home Page";
+    }
+    return "$userNameさんのHome Page";
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final User? user = ref.watch(userProvider);
+    String userName = ref.read(userProvider.notifier).readUserName();
+    String pageTitle = getHomePageTitle(userName: userName);
+
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(

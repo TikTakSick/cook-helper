@@ -1,31 +1,25 @@
-import 'package:cook_helper_mobile_app/view/ui_settings/ui_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
+// ui_settings
 import '../ui_settings/ui_textstyles.dart';
 import '../ui_settings/ui_buttonstyles.dart';
-import '../../controller/dialogs/dialogs_controller.dart';
+import '../ui_settings/ui_colors.dart';
+// controllers
+import '../../controllers/user_controller.dart';
+import '../../controllers/dialogs/dialogs_controller.dart';
 
-class UpdatingUserNameDialog extends StatefulWidget {
-  UpdatingUserNameDialog({Key? key}) : super(key: key);
-
-  @override
-  _UpdatingUserNameDialogState createState() => _UpdatingUserNameDialogState();
-}
-
-class _UpdatingUserNameDialogState extends State<UpdatingUserNameDialog> {
-  final user = FirebaseAuth.instance.currentUser!;
+class UpdatingUserNameDialog extends ConsumerWidget {
+  UpdatingUserNameDialog({super.key});
   final userNameController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    userNameController.text = DialogController().getUserName();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final User user = ref.watch(userProvider);
+    String userName = ref.read(userProvider.notifier).readUserName();
+    userNameController.text = userName;
 
-  @override
-  Widget build(BuildContext context) {
     return AlertDialog(
       surfaceTintColor: CommonColors.dialogBackgroundColor,
       backgroundColor: CommonColors.dialogBackgroundColor,
@@ -37,21 +31,26 @@ class _UpdatingUserNameDialogState extends State<UpdatingUserNameDialog> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Gap(10),
-            Text("現在のユーザ名:  ${user.displayName}"),
+            Text("現在のユーザ名:  $userName"),
             const Gap(10),
             TextFormField(controller: userNameController)
           ])),
       actions: [
         OutlinedButton(
             style: DialogButton.style,
-            onPressed: () {
+            onPressed: () async {
               // ユーザ名変更の操作を行う.
-              bool result = DialogController()
+              bool result = await ref
+                  .read(userProvider.notifier)
                   .updateUserName(userName: userNameController.text);
+              if (!context.mounted) {
+                return;
+              }
               // ユーザ名変更捜査の結果を表示する．
               Navigator.pop(context);
               DialogController().showUpdatingUserNameResultDialog(
                   context: context, result: result);
+              // Provider状態変更を行う．
             },
             child: const Text('ユーザ名を変更する',
                 style: CommonTextStyle.dialogButtonTextStyle))

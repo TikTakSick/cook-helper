@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../view/pages/home_page.dart';
-import '../../view/pages/login_page.dart';
-import '../../view/pages/setting_page.dart';
-import "../../model/authuser_model.dart";
+import '../../views/pages/home_page.dart';
+import '../../views/pages/login_page.dart';
+import '../../views/pages/setting_page.dart';
 
 class HomePageController {
   // ページタイトルを取得
-  String getHomePageTitle() {
-    String? userName = AuthUserModel().getUserName();
-    if (userName == null) {
-      return "Home Page";
-    }
-    return "$userNameさんのHome Page";
-  }
 
   // ログアウト時の動作
   logOut({required context}) async {
