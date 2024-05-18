@@ -1,6 +1,7 @@
 import 'package:cook_helper_mobile_app/view/ui_settings/ui_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gap/gap.dart';
 
 import '../ui_settings/ui_textstyles.dart';
 import '../ui_settings/ui_buttonstyles.dart';
@@ -26,11 +27,18 @@ class _UpdatingUserNameDialogState extends State<UpdatingUserNameDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      surfaceTintColor: CommonColors.pageBackgroundColor,
-      backgroundColor: CommonColors.pageBackgroundColor,
-      content: TextFormField(
-        controller: userNameController,
-      ),
+      titleTextStyle: CommonTextStyle.dialogTitleTextStyle,
+      contentTextStyle: CommonTextStyle.dialogContentTextStyle,
+      title: const Text("ユーザ名の変更"),
+      content: Container(
+          height: 100,
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Gap(10),
+            Text("・今のユーザ名： ${user.displayName}"),
+            const Gap(10),
+            TextFormField(controller: userNameController)
+          ])),
       actions: [
         OutlinedButton(
           style: DialogButton.style,
@@ -39,11 +47,12 @@ class _UpdatingUserNameDialogState extends State<UpdatingUserNameDialog> {
             bool result = DialogController()
                 .updateUserName(userName: userNameController.text);
             Navigator.pop(context);
+            // ユーザ名変更捜査の結果を表示する．
             DialogController().showUpdatingUserNameResultDialog(
                 context: context, result: result);
           },
           child: const Text('ユーザ名を変更する',
-              style: CommonTextStyle.dialogButtonTextStyle),
+              style: CommonTextStyle.dialogContentTextStyle),
         )
       ],
     );

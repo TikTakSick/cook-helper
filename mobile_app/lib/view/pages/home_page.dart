@@ -1,4 +1,3 @@
-import 'package:cook_helper_mobile_app/view/pages/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -69,8 +68,8 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.settings, color: CommonColors.subprimaryColor),
           ),
         ],
+        // タップされたボタンに応じて，画面遷移する．
         onTap: (index) {
-          // タップされたボタンに応じて，画面遷移する．
           HomePageController().navigatorByBottomNavigationBarItem(
               context: context, index: index);
         },

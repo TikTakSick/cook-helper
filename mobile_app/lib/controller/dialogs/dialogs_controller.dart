@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import '../../model/authuser_model.dart';
 import '../../view/dialogs/show_result_dialog.dart';
 
@@ -25,6 +25,7 @@ class DialogController {
     }
   }
 
+  // UpdatingUserNameDialogで行った操作（ユーザ名変更）の結果を返すダイアログ
   showUpdatingUserNameResultDialog({required context, required bool result}) {
     showDialog(
         context: context,

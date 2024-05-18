@@ -22,8 +22,6 @@ class ShowResultDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      surfaceTintColor: CommonColors.pageBackgroundColor,
-      backgroundColor: CommonColors.pageBackgroundColor,
       title: (result == success)
           ? titleText(text: "$topic:  成功")
           : titleText(text: "$topic:  失敗"),
