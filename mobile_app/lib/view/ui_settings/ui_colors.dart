@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CommonColors {
   static const Color textColor = Colors.black;
   static const Color pageBackgroundColor = Color.fromARGB(255, 248, 237, 216);
+  static const Color dialogBackgroundColor = Colors.white;
 
   static const MaterialColor primaryColor =
       MaterialColor(0xFFC9A99A, <int, Color>{

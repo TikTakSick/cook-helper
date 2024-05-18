@@ -45,28 +45,27 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(24), child: Text("ログイン情報：${user}")),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        iconSize: 30,
         currentIndex: 1,
+        // アイコン設定
+        iconSize: 35,
+        selectedIconTheme:
+            const IconThemeData(color: CommonColors.subprimaryColor),
+        unselectedIconTheme:
+            const IconThemeData(color: CommonColors.subprimaryColor),
+        // ラベルの色設定をここで行う（統一する）
         selectedItemColor: CommonColors.textColor,
+        unselectedItemColor: CommonColors.textColor,
+        // ラベルのTextstyle設定（fontSizeを統一させる）
         selectedLabelStyle:
             CommonTextStyle.bottomNavigationBarItemLabelTextStyle,
-        unselectedItemColor: CommonColors.textColor,
         unselectedLabelStyle:
             CommonTextStyle.bottomNavigationBarItemLabelTextStyle,
+        // 背景色
         backgroundColor: CommonColors.primaryColor,
         items: const [
-          BottomNavigationBarItem(
-            label: "レシピ追加",
-            icon: Icon(Icons.add, color: CommonColors.subprimaryColor),
-          ),
-          BottomNavigationBarItem(
-            label: "ホーム画面更新",
-            icon: Icon(Icons.home, color: CommonColors.subprimaryColor),
-          ),
-          BottomNavigationBarItem(
-            label: "設定",
-            icon: Icon(Icons.settings, color: CommonColors.subprimaryColor),
-          ),
+          BottomNavigationBarItem(label: "レシピ追加", icon: Icon(Icons.add)),
+          BottomNavigationBarItem(label: "ホーム画面更新", icon: Icon(Icons.home)),
+          BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
         ],
         // タップされたボタンに応じて，画面遷移する．
         onTap: (index) {

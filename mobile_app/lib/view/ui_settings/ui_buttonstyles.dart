@@ -25,5 +25,6 @@ class SettingPageButton {
 class DialogButton {
   static ButtonStyle style = OutlinedButton.styleFrom(
       backgroundColor: CommonColors.primaryColor,
+      textStyle: const TextStyle(color: CommonColors.textColor),
       side: const BorderSide(color: CommonColors.subprimaryColor));
 }
