@@ -6,14 +6,8 @@ import '../ui_settings/ui_textstyles.dart';
 import "../ui_settings/ui_buttonstyles.dart";
 import "../../controllers/pages/setting_page_controller.dart";
 
-class SettingPage extends StatefulWidget {
-  const SettingPage({Key? key}) : super(key: key);
-
-  @override
-  _SettingPageState createState() => _SettingPageState();
-}
-
-class _SettingPageState extends State<SettingPage> {
+class SettingPage extends StatelessWidget {
+  const SettingPage({super.key});
   final String title = "Setting Page";
 
   @override

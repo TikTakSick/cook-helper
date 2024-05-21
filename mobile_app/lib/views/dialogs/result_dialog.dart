@@ -4,13 +4,12 @@ import '../ui_settings/ui_colors.dart';
 import '../ui_settings/ui_textstyles.dart';
 
 // 何かしらのデータベースに対する操作の結果を表示するダイアログ
-class ShowResultDialog extends StatelessWidget {
+class ResultDialog extends StatelessWidget {
   final String topic;
   final bool result;
 
   // コンストラクタでtopicとresultをを受け取流．
-  const ShowResultDialog(
-      {super.key, required this.topic, required this.result});
+  const ResultDialog({super.key, required this.topic, required this.result});
 
   @override
   Widget build(BuildContext context) {

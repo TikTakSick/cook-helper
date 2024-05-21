@@ -28,7 +28,7 @@ class HomePageController {
         // ホーム更新
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
-            return HomePage();
+            return const HomePage();
           }),
         );
       case 2:
