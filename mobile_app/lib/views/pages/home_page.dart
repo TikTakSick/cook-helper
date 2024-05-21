@@ -12,23 +12,25 @@ class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
   // userNameを元に，userNameを変更する．
-  String getHomePageTitle({required userName}) {
-    if (userName == "") {
+  String getHomePageTitle({required currentUserName}) {
+    if (currentUserName == "") {
       return "Home Page";
     }
-    return "$userNameさんのHome Page";
+    return "$currentUserNameさんのHome Page";
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final User? user = ref.watch(userProvider);
-    String userName = ref.read(userProvider.notifier).readUserName();
-    String pageTitle = getHomePageTitle(userName: userName);
+    final String currentUserName =
+        ref.read(userProvider.notifier).readUserName();
+    final String homePageTitle =
+        getHomePageTitle(currentUserName: currentUserName);
 
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
-        title: Text(pageTitle, style: CommonTextStyle.pageTitleTextStyle),
+        title: Text(homePageTitle, style: pageTitleTextStyle),
         backgroundColor: CommonColors.primaryColor,
         actions: <Widget>[
           IconButton(
@@ -56,10 +58,8 @@ class HomePage extends ConsumerWidget {
         selectedItemColor: CommonColors.textColor,
         unselectedItemColor: CommonColors.textColor,
         // ラベルのTextstyle設定（fontSizeを統一させる）
-        selectedLabelStyle:
-            CommonTextStyle.bottomNavigationBarItemLabelTextStyle,
-        unselectedLabelStyle:
-            CommonTextStyle.bottomNavigationBarItemLabelTextStyle,
+        selectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
+        unselectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
         // 背景色
         backgroundColor: CommonColors.primaryColor,
         items: const [

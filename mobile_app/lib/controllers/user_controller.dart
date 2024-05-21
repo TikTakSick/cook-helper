@@ -8,6 +8,7 @@ final userProvider = StateNotifierProvider<UserController, User?>(
 class UserController extends StateNotifier<User?> {
   final _auth = FirebaseAuth.instance;
   final bool success = true;
+
   // コンストラクタ
   UserController({User? initialUser}) : super(initialUser) {
     // Userの変更を検知して状態を更新
@@ -23,6 +24,11 @@ class UserController extends StateNotifier<User?> {
     } else {
       return state!.displayName.toString();
     }
+  }
+
+  // ユーザID取得
+  String readUserID() {
+    return state!.uid;
   }
 
   // ユーザ名更新

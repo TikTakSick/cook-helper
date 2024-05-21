@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// pages
 import '../../views/pages/home_page.dart';
 import '../../views/pages/login_page.dart';
 import '../../views/pages/setting_page.dart';
+import '../../views/pages/recipe_add_page.dart';
 
 class HomePageController {
-  // ページタイトルを取得
-
   // ログアウト時の動作
   logOut({required context}) async {
     await FirebaseAuth.instance.signOut();
@@ -19,13 +19,16 @@ class HomePageController {
     );
   }
 
-  // ホームページの下位ボタンが押された時の動作．
+  // ホーム画面の下位ボタンが押された時の動作．
   navigatorByBottomNavigationBarItem({required context, required index}) async {
     switch (index) {
       case 0:
-        print("hello0");
+        // レシピ追加ページに移る．
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return RecipeAddPage();
+        }));
       case 1:
-        // ホーム更新
+        // ホームページ更新
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
             return const HomePage();

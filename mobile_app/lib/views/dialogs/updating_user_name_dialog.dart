@@ -31,8 +31,8 @@ class UpdatingUserNameDialog extends ConsumerWidget {
     return AlertDialog(
       surfaceTintColor: CommonColors.dialogBackgroundColor,
       backgroundColor: CommonColors.dialogBackgroundColor,
-      titleTextStyle: CommonTextStyle.dialogTitleTextStyle,
-      contentTextStyle: CommonTextStyle.dialogContentTextStyle,
+      titleTextStyle: dialogTitleTextStyle,
+      contentTextStyle: dialogContentTextStyle,
       title: const Text("ユーザ名の変更"),
       content: SizedBox(
           height: 100,
@@ -92,7 +92,6 @@ class UpdatingUserNameDialogButtonState
         child: buttonPressed
             ? const CircularProgressIndicator(
                 strokeWidth: 2.0, color: CommonColors.textColor)
-            : const Text('ユーザ名を変更する',
-                style: CommonTextStyle.dialogButtonTextStyle));
+            : const Text('ユーザ名を変更する', style: dialogButtonTextStyle));
   }
 }

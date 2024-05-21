@@ -21,8 +21,7 @@ class ResultDialog extends StatelessWidget {
     String resultMessage = (success) ? "成功" : "失敗";
 
     Text titleText = Text("$topic: $resultMessage",
-        style: CommonTextStyle.dialogTitleTextStyle,
-        textAlign: TextAlign.center);
+        style: dialogTitleTextStyle, textAlign: TextAlign.center);
 
     return AlertDialog(
         icon: resultIcon,

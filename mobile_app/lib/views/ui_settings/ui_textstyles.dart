@@ -2,23 +2,25 @@ import 'package:flutter/material.dart';
 
 import 'ui_colors.dart';
 
-class CommonTextStyle {
-  // Page TextStyle
-  static const TextStyle pageTitleTextStyle = TextStyle(fontSize: 20);
+// Page TextStyle
+const TextStyle pageTitleTextStyle = TextStyle(fontSize: 20);
 
-  // Dialog TextStyle
-  static const TextStyle dialogTitleTextStyle =
-      TextStyle(fontSize: 25, color: CommonColors.textColor);
+// Dialog TextStyle
+const TextStyle dialogTitleTextStyle =
+    TextStyle(fontSize: 25, color: CommonColors.textColor);
 
-  static const TextStyle dialogContentTextStyle =
-      TextStyle(fontSize: 15, color: CommonColors.textColor);
+const TextStyle dialogContentTextStyle =
+    TextStyle(fontSize: 15, color: CommonColors.textColor);
 
-  // Button・NavigationBarItem TextStyle
-  static const TextStyle elevatedButtonTextStyle = TextStyle(fontSize: 18);
+// Button・NavigationBarItem TextStyle
+const TextStyle elevatedButtonTextStyle = TextStyle(fontSize: 18);
 
-  static const TextStyle dialogButtonTextStyle =
-      TextStyle(color: CommonColors.textColor);
+const TextStyle dialogButtonTextStyle =
+    TextStyle(color: CommonColors.textColor);
 
-  static const TextStyle bottomNavigationBarItemLabelTextStyle =
-      TextStyle(fontSize: 17, color: CommonColors.textColor);
-}
+const TextStyle bottomNavigationBarItemLabelTextStyle =
+    TextStyle(fontSize: 17, color: CommonColors.textColor);
+
+// RadioListTile TextStyle
+const TextStyle radioListTileTextStyle =
+    TextStyle(color: CommonColors.textColor);

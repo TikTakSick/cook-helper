@@ -15,7 +15,7 @@ class SettingPage extends StatelessWidget {
     return Scaffold(
         backgroundColor: CommonColors.pageBackgroundColor,
         appBar: AppBar(
-          title: Text(title, style: CommonTextStyle.pageTitleTextStyle),
+          title: Text(title, style: pageTitleTextStyle),
           backgroundColor: CommonColors.primaryColor,
         ),
         body: Container(
@@ -27,8 +27,7 @@ class SettingPage extends StatelessWidget {
               // ユーザ名変更
               ElevatedButton(
                 style: SettingPageButton.style,
-                child: const Text('ユーザ名変更',
-                    style: CommonTextStyle.elevatedButtonTextStyle),
+                child: const Text('ユーザ名変更', style: elevatedButtonTextStyle),
                 onPressed: () {
                   SettingPageController()
                       .showUpdatingUserNameDialog(context: context);

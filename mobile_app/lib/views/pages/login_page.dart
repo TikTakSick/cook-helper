@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
-        title: Text(title, style: CommonTextStyle.pageTitleTextStyle),
+        title: Text(title, style: pageTitleTextStyle),
         backgroundColor: CommonColors.primaryColor,
       ),
       body: Center(
@@ -84,8 +84,8 @@ class _LoginPageState extends State<LoginPage> {
               // ユーザ登録（サインアップ）ボタン
               ElevatedButton(
                 style: AuthButton.style,
-                child: const Text('ユーザ登録（サインアップ）',
-                    style: CommonTextStyle.elevatedButtonTextStyle),
+                child:
+                    const Text('ユーザ登録（サインアップ）', style: elevatedButtonTextStyle),
                 onPressed: () async {
                   try {
                     final User? user = (await FirebaseAuth.instance
@@ -110,8 +110,7 @@ class _LoginPageState extends State<LoginPage> {
               // ログインボタン
               ElevatedButton(
                   style: AuthButton.style,
-                  child: const Text('ログイン',
-                      style: CommonTextStyle.elevatedButtonTextStyle),
+                  child: const Text('ログイン', style: elevatedButtonTextStyle),
                   onPressed: () async {
                     try {
                       // メール/パスワードでログイン
@@ -136,8 +135,8 @@ class _LoginPageState extends State<LoginPage> {
               // パスワードリセットボタン
               ElevatedButton(
                   style: AuthButton.style,
-                  child: const Text('パスワードリセット',
-                      style: CommonTextStyle.elevatedButtonTextStyle),
+                  child:
+                      const Text('パスワードリセット', style: elevatedButtonTextStyle),
                   onPressed: () async {
                     try {
                       await FirebaseAuth.instance
