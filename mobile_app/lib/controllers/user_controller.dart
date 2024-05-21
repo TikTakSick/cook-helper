@@ -42,6 +42,11 @@ class UserController extends StateNotifier<User?> {
     }
   }
 
+  // パスワードリセット
+  // Future<void> resetPassword(){
+
+  // }
+
   // ログアウト
   Future<bool> logOut({required context}) async {
     try {

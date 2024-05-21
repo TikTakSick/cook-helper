@@ -17,8 +17,7 @@ import '../../controllers/dialogs/setting_dialog_controller.dart';
 
 // ダイアログボタン本体
 class UpdatingUserNameDialog extends ConsumerWidget {
-  UpdatingUserNameDialog({super.key});
-  final userNameController = TextEditingController();
+  const UpdatingUserNameDialog({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,39 +25,18 @@ class UpdatingUserNameDialog extends ConsumerWidget {
     final UserController userController = ref.read(userProvider.notifier);
     // ユーザ名を取得し，テキストフィールドに入力する．
     String currentUserName = userController.readUserName();
-    userNameController.text = currentUserName;
 
-    return AlertDialog(
-      surfaceTintColor: CommonColors.dialogBackgroundColor,
-      backgroundColor: CommonColors.dialogBackgroundColor,
-      titleTextStyle: dialogTitleTextStyle,
-      contentTextStyle: dialogContentTextStyle,
-      title: const Text("ユーザ名の変更"),
-      content: SizedBox(
-          height: 100,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Gap(10),
-            Text("現在のユーザ名:  $currentUserName"),
-            const Gap(10),
-            TextFormField(controller: userNameController)
-          ])),
-      // ボタン部分
-      actions: [
-        UpdatingUserNameDialogButton(
-            newUserName: userNameController.text,
-            userController: userController),
-      ],
-    );
+    return UpdatingUserNameDialogButton(
+        userController: userController, currentUserName: currentUserName);
   }
 }
 
 // ダイアログボタン部分
 class UpdatingUserNameDialogButton extends StatefulWidget {
-  final String newUserName;
   final UserController userController;
+  final String currentUserName;
   const UpdatingUserNameDialogButton(
-      {super.key, required this.newUserName, required this.userController});
+      {super.key, required this.userController, required this.currentUserName});
 
   @override
   UpdatingUserNameDialogButtonState createState() =>
@@ -68,30 +46,55 @@ class UpdatingUserNameDialogButton extends StatefulWidget {
 class UpdatingUserNameDialogButtonState
     extends State<UpdatingUserNameDialogButton> {
   bool buttonPressed = false;
+  final userNameController = TextEditingController();
+
+  @override
+  initState() {
+    super.initState();
+    userNameController.text = widget.currentUserName;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-        style: DialogButton.style,
-        onPressed: () async {
-          setState(() {
-            buttonPressed = true;
-          });
+    return AlertDialog(
+        surfaceTintColor: CommonColors.dialogBackgroundColor,
+        backgroundColor: CommonColors.dialogBackgroundColor,
+        titleTextStyle: dialogTitleTextStyle,
+        contentTextStyle: dialogContentTextStyle,
+        title: const Text("ユーザ名の変更"),
+        content: SizedBox(
+            height: 100,
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Gap(10),
+              Text("現在のユーザ名:  ${widget.currentUserName}"),
+              const Gap(10),
+              TextFormField(controller: userNameController)
+            ])),
+        // ボタン部分
+        actions: [
+          OutlinedButton(
+              style: DialogButton.style,
+              onPressed: () async {
+                setState(() {
+                  buttonPressed = true;
+                });
 
-          // ユーザ名変更の操作を行う.
-          bool result = await widget.userController
-              .updateUserName(userName: widget.newUserName);
-          if (!context.mounted) {
-            return;
-          }
-          // ユーザ名変更捜査の結果を表示する．
-          Navigator.pop(context);
-          SettingDialogController().showUpdatingUserNameResultDialog(
-              context: context, result: result);
-        },
-        child: buttonPressed
-            ? const CircularProgressIndicator(
-                strokeWidth: 2.0, color: CommonColors.textColor)
-            : const Text('ユーザ名を変更する', style: dialogButtonTextStyle));
+                // ユーザ名変更の操作を行う.
+                bool result = await widget.userController
+                    .updateUserName(userName: userNameController.text);
+                if (!context.mounted) {
+                  return;
+                }
+                // ユーザ名変更捜査の結果を表示する．
+                Navigator.pop(context);
+                SettingDialogController().showUpdatingUserNameResultDialog(
+                    context: context, result: result);
+              },
+              child: buttonPressed
+                  ? const CircularProgressIndicator(
+                      strokeWidth: 2.0, color: CommonColors.textColor)
+                  : const Text('ユーザ名を変更する', style: dialogButtonTextStyle))
+        ]);
   }
 }
