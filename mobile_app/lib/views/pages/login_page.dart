@@ -2,33 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gap/gap.dart';
 
-import 'home_page.dart';
-import '../ui_settings/ui_colors.dart';
-import "../ui_settings/ui_buttonstyles.dart";
-import "../ui_settings/ui_textstyles.dart";
+import 'my_page.dart';
+
+// views_utils
+import '../utils/page_title.dart';
+import '../utils/colors.dart';
+import "../utils/button_styles.dart";
+import "../utils/text_styles.dart";
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
   String message = '';
   String infoMessage = '';
   bool isError = false;
-  final String title = "Cook Helper Login Page";
 
-  void set_infoMessage(message) {
+  final String titleName = "Cook Helper Login Page";
+
+  void setInfoMessage(message) {
     setState(() {
       infoMessage = message;
     });
   }
 
-  void set_isError({boolean = true}) {
+  void setIsError({boolean = true}) {
     setState(() {
       isError = boolean;
     });
@@ -39,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
-        title: Text(title, style: pageTitleTextStyle),
+        title: PageTitle(pageTitleName: titleName),
         backgroundColor: CommonColors.primaryColor,
       ),
       body: Center(
@@ -97,13 +101,13 @@ class _LoginPageState extends State<LoginPage> {
                       // ユーザ登録に成功したので，ホーム画面に遷移する．
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return HomePage();
+                          return MyPage();
                         }),
                       );
                     }
                   } on FirebaseAuthException catch (error) {
-                    set_isError(boolean: true);
-                    set_infoMessage(error.message.toString());
+                    setIsError(boolean: true);
+                    setInfoMessage(error.message.toString());
                   }
                 },
               ),
@@ -123,13 +127,13 @@ class _LoginPageState extends State<LoginPage> {
                         // ログイン成功したので，ホーム画面に遷移．
                         await Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) {
-                            return HomePage();
+                            return MyPage();
                           }),
                         );
                       }
                     } on FirebaseAuthException catch (error) {
-                      set_isError(boolean: true);
-                      set_infoMessage(error.message.toString());
+                      setIsError(boolean: true);
+                      setInfoMessage(error.message.toString());
                     }
                   }),
               // パスワードリセットボタン
@@ -142,12 +146,12 @@ class _LoginPageState extends State<LoginPage> {
                       await FirebaseAuth.instance
                           .sendPasswordResetEmail(email: _email);
                       message = "パスワードリセット用のメールを送信しました";
-                      set_isError(boolean: false);
+                      setIsError(boolean: false);
                     } on FirebaseAuthException catch (error) {
                       message = error.message.toString();
-                      set_isError(boolean: true);
+                      setIsError(boolean: true);
                     }
-                    set_infoMessage(message);
+                    setInfoMessage(message);
                   }),
             ],
           ),

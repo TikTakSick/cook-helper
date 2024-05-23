@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 // pages
-import '../../views/pages/home_page.dart';
+import '../../views/pages/my_page.dart';
 import '../../views/pages/login_page.dart';
 import '../../views/pages/setting_page.dart';
 import '../../views/pages/recipe_add_page.dart';
@@ -25,13 +25,13 @@ class HomePageController {
       case 0:
         // レシピ追加ページに移る．
         await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-          return RecipeAddPage();
+          return const RecipeAddPage();
         }));
       case 1:
         // ホームページ更新
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
-            return const HomePage();
+            return const MyPage();
           }),
         );
       case 2:

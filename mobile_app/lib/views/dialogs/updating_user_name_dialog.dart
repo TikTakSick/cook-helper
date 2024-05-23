@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
-// ui_settings
-import '../ui_settings/ui_textstyles.dart';
-import '../ui_settings/ui_buttonstyles.dart';
-import '../ui_settings/ui_colors.dart';
+// views_utils
+import '../utils/text_styles.dart';
+import '../utils/button_styles.dart';
+import '../utils/colors.dart';
 // controllers
 import '../../controllers/user_controller.dart';
 import '../../controllers/dialogs/setting_dialog_controller.dart';
 
 // ユーザ名変更のダイアログを実装している．
-//　以下二つの部分に分かれている．
-// UpdatingUserNameDialog：ダイアログ本体
-// UpdatingUserNameDialogButton：ダイアログボタン部分
+// 以下二つの部分に分かれている．
+// - UpdatingUserNameDialog：ダイアログ本体
+// - UpdatingUserNameDialogButton：ダイアログボタン部分
 
 // ダイアログボタン本体
 class UpdatingUserNameDialog extends ConsumerWidget {

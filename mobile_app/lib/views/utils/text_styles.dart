@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'ui_colors.dart';
+import 'colors.dart';
 
-// Page TextStyle
-const TextStyle pageTitleTextStyle = TextStyle(fontSize: 20);
+// Page Title TextStyle
+const TextStyle pageTitleTextStyle =
+    TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
 // Dialog TextStyle
 const TextStyle dialogTitleTextStyle =

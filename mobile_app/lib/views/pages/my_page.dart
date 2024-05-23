@@ -2,35 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../ui_settings/ui_colors.dart';
-import '../ui_settings/ui_textstyles.dart';
+// views_utils
+import '../utils/page_title.dart';
+import '../utils/colors.dart';
+import '../utils/text_styles.dart';
+
+// controllers
 import '../../controllers/pages/home_page_controller.dart';
 import '../../controllers/user_controller.dart';
 
 // ホーム画面用Widget
-class HomePage extends ConsumerWidget {
-  const HomePage({super.key});
+class MyPage extends ConsumerWidget {
+  const MyPage({super.key});
 
-  // userNameを元に，userNameを変更する．
-  String getHomePageTitle({required currentUserName}) {
-    if (currentUserName == "") {
-      return "Home Page";
-    }
-    return "$currentUserNameさんのHome Page";
-  }
+  final String titleName = "マイページ";
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // ユーザを取得する．
     final User? user = ref.watch(userProvider);
+    final UserController userController = ref.read(userProvider.notifier);
+    //  //ユーザ名取得
     final String currentUserName =
         ref.read(userProvider.notifier).readUserName();
-    final String homePageTitle =
-        getHomePageTitle(currentUserName: currentUserName);
 
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
-        title: Text(homePageTitle, style: pageTitleTextStyle),
+        title: PageTitle(pageTitleName: titleName),
         backgroundColor: CommonColors.primaryColor,
         actions: <Widget>[
           IconButton(
@@ -39,13 +38,15 @@ class HomePage extends ConsumerWidget {
                 color: CommonColors.subprimaryColor,
               ),
               // ログアウトする．
-              onPressed: () => HomePageController().logOut(context: context)),
+              onPressed: () => userController.logOut(context: context)),
         ],
       ),
-      body: Center(
+      body: SingleChildScrollView(
+          child: Center(
         child: Container(
             padding: const EdgeInsets.all(24), child: Text("ログイン情報：${user}")),
-      ),
+      )),
+      // 下ボタン
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         // アイコン設定

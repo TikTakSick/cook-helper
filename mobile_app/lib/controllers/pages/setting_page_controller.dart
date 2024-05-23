@@ -7,7 +7,7 @@ class SettingPageController {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return UpdatingUserNameDialog();
+          return const UpdatingUserNameDialog();
         });
   }
 }

@@ -1,4 +1,4 @@
-import 'result_dialog.dart';
+import '../utils/result_dialog.dart';
 
 class UpdatingUserNameResultDialog extends ResultDialog {
   final bool updatingUserNameResult;

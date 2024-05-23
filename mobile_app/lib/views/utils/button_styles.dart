@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ui_colors.dart';
+import 'colors.dart';
 
 class AuthButton {
   static ButtonStyle style = ElevatedButton.styleFrom(

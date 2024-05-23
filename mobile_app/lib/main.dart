@@ -3,8 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// views
+import 'views/pages/my_page.dart';
 import 'views/pages/login_page.dart';
-import 'views/ui_settings/ui_colors.dart';
+import 'views/utils/colors.dart';
+
+// controller
+import 'controllers/user_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +29,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: CommonColors.primaryColor,
       ),
-      home: const LoginPage(),
+      home: const Home(),
+    );
+  }
+}
+
+class Home extends ConsumerWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 認証状態に応じて画面遷移する．
+    final authStateAsync = ref.watch(autoStateChangesProvider);
+    return authStateAsync.when(
+      data: (user) => user != null ? const MyPage() : const LoginPage(),
+      loading: () => const CircularProgressIndicator(),
+      error: (err, stack) => Text("Error: $err"),
     );
   }
 }

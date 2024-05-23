@@ -1,6 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../views/pages/login_page.dart';
+
+// ユーザの認証状態を提供するProvider
+final autoStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
+  final firebaseAuth = ref.watch(firebaseAuthProvider);
+  return firebaseAuth.authStateChanges();
+});
+
+// firebaseAuthProvider
+final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
+  return FirebaseAuth.instance;
+});
+
+// userProvider
 final userProvider = StateNotifierProvider<UserController, User?>(
   (ref) => UserController(initialUser: FirebaseAuth.instance.currentUser),
 );
@@ -20,7 +35,7 @@ class UserController extends StateNotifier<User?> {
   // ユーザ名取得
   String readUserName() {
     if (state?.displayName == null) {
-      return "";
+      return "<名前がありません>";
     } else {
       return state!.displayName.toString();
     }
@@ -34,7 +49,7 @@ class UserController extends StateNotifier<User?> {
   // ユーザ名更新
   Future<bool> updateUserName({required String userName}) async {
     try {
-      await state?.updateDisplayName(userName);
+      await state!.updateDisplayName(userName);
       return success;
     } on FirebaseAuthException catch (error) {
       print("$error");
@@ -50,7 +65,15 @@ class UserController extends StateNotifier<User?> {
   // ログアウト
   Future<bool> logOut({required context}) async {
     try {
-      _auth.signOut();
+      await _auth.signOut();
+      // スタックしていた画面を全て捨てる．
+      await Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+        return const LoginPage();
+      }), (_) {
+        return false;
+      });
+
       return success;
     } on FirebaseAuthException catch (error) {
       print("$error");
