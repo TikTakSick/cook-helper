@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:community_material_icon/community_material_icon.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 
 // views_utils
 import '../utils/page_title.dart';
@@ -7,8 +12,21 @@ import '../utils/colors.dart';
 import '../utils/text_styles.dart';
 
 // controllers
-import '../../controllers/pages/home_page_controller.dart';
+import '../../controllers/pages/my_page_controller.dart';
 import '../../controllers/auth_controller.dart';
+
+const recipeAddPageValue = 0;
+const randomRecipePageValue = 1;
+const settingPageValue = 2;
+
+const Map<int, BottomNavigationBarItem> bottomNavigationBarItemMap = {
+  recipeAddPageValue:
+      BottomNavigationBarItem(label: "レシピ追加", icon: Icon(Icons.add)),
+  randomRecipePageValue: BottomNavigationBarItem(
+      label: "おまかせレシピ", icon: Icon(CommunityMaterialIcons.chef_hat)),
+  settingPageValue:
+      BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
+};
 
 // ホーム画面用Widget
 class MyPage extends ConsumerWidget {
@@ -24,29 +42,66 @@ class MyPage extends ConsumerWidget {
     //  //ユーザ名取得
     final String? currentUserName = authController.readUserName();
 
+    // BottomNavigationBarItemのリスト
+    List<BottomNavigationBarItem> bottomNavigationBarItemList =
+        bottomNavigationBarItemMap.values.toList();
+
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
         title: PageTitle(pageTitleName: titleName),
         backgroundColor: CommonColors.primaryColor,
+        leading: IconButton(
+          onPressed: () async {
+            // ホーム画面更新
+            await Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) {
+                return const MyPage();
+              }),
+            );
+          },
+          icon: const Icon(
+            Icons.food_bank,
+            color: CommonColors.subprimaryColor,
+            size: 40,
+          ),
+        ),
         actions: <Widget>[
           IconButton(
               icon: const Icon(
                 Icons.logout,
                 color: CommonColors.subprimaryColor,
+                size: 40,
               ),
               // ログアウトする．
               onPressed: () => authController.logOut(context: context)),
         ],
       ),
       body: SingleChildScrollView(
-          child: Column(children: [
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        const Gap(10),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            SingleChildScrollView(
-                child: Text(
-                    overflow: TextOverflow.ellipsis, "ユーザ名：$currentUserName")),
+            Column(children: [
+              Text(overflow: TextOverflow.ellipsis, "ユーザ名：$currentUserName "),
+              const Text("--上部ボタンの説明--"),
+              const Gap(3),
+              const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Icon(
+                  Icons.food_bank,
+                ),
+                Text("：マイページ更新")
+              ]),
+              const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                Icon(
+                  Icons.logout,
+                ),
+                Text("：      ログアウト")
+              ]),
+              const Gap(3),
+              const Text("---------------------"),
+            ])
           ],
         ),
         Container(
@@ -68,12 +123,9 @@ class MyPage extends ConsumerWidget {
         selectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
         unselectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
         // 背景色
+        type: BottomNavigationBarType.fixed,
         backgroundColor: CommonColors.primaryColor,
-        items: const [
-          BottomNavigationBarItem(label: "レシピ追加", icon: Icon(Icons.add)),
-          BottomNavigationBarItem(label: "ホーム画面更新", icon: Icon(Icons.home)),
-          BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
-        ],
+        items: bottomNavigationBarItemList,
         // タップされたボタンに応じて，画面遷移する．
         onTap: (index) {
           HomePageController().navigatorByBottomNavigationBarItem(

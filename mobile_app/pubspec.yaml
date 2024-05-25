@@ -43,6 +43,7 @@ dependencies:
   gap: ^3.0.1
   flutter_riverpod: ^2.5.1
   auto_size_text_field: ^2.2.3
+  community_material_icon: ^5.9.55
 
 dev_dependencies:
   flutter_test:

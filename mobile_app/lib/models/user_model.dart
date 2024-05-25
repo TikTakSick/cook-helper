@@ -9,44 +9,56 @@ class UserModel {
 
   // コンストラクタ
   UserModel({required this.auth, required this.user}) {
-    userName = (user?.displayName == null || user?.displayName == "")
-        ? "<名無し>"
-        : user!.displayName.toString();
-    uid = user!.uid;
+    if (user != null) {
+      userName = (user?.displayName == null || user?.displayName == "")
+          ? "<名無し>"
+          : user!.displayName.toString();
+      uid = user!.uid;
+    } else {
+      uid = null;
+      userName = null;
+    }
   }
 
   // 以下メソッド
 
-  // ユーザ名更新
-  Future<void> updateUserName({required String userName}) async {
-    try {
-      await user!.updateDisplayName(userName);
-    } on FirebaseAuthException catch (error) {
-      print("$error");
-    }
+  // サインアップ
+  Future<void> signUp({email, password}) async {
+    await auth.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  // ログイン
+  Future<User?> signInWithEmailAndPassword({email, password}) async {
+    final userCredential =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
+    return userCredential.user;
+  }
+
+  // サインアップ
+  Future<User?> createUserWithEmailAndPassword({email, password}) async {
+    final userCredential = await auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    return userCredential.user;
   }
 
   // パスワードリセット
-  // Future<void> resetPassword(){
+  Future<void> sendPasswordResetEmail({email}) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
 
-  // }
+  // ユーザ名更新
+  Future<void> updateUserName({required String userName}) async {
+    await user!.updateDisplayName(userName);
+  }
 
   // ユーザ削除
   Future<void> delete() async {
-    try {
-      await user!.delete();
-      await auth.signOut();
-    } on FirebaseAuthException catch (error) {
-      print("${error}");
-    }
+    await user!.delete();
+    await auth.signOut();
   }
 
   // ログアウト
   Future<void> logOut() async {
-    try {
-      await auth.signOut();
-    } on FirebaseAuthException catch (error) {
-      print("${error}");
-    }
+    await auth.signOut();
   }
 }

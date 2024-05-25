@@ -42,7 +42,7 @@ class Home extends ConsumerWidget {
     // 認証状態に応じて画面遷移する．
     final authStateAsync = ref.watch(autoStateChangesProvider);
     return authStateAsync.when(
-      data: (user) => user != null ? const MyPage() : const LoginPage(),
+      data: (user) => user != null ? MyPage() : const LoginPage(),
       loading: () => const CircularProgressIndicator(),
       error: (err, stack) => Text("Error: $err"),
     );
