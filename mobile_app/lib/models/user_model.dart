@@ -19,7 +19,6 @@ class UserModel {
 
   // ユーザ名更新
   Future<void> updateUserName({required String userName}) async {
-    print("HERE11");
     try {
       await user!.updateDisplayName(userName);
     } on FirebaseAuthException catch (error) {
@@ -34,7 +33,6 @@ class UserModel {
 
   // ユーザ削除
   Future<void> delete() async {
-    print("HERE12");
     try {
       await user!.delete();
       await auth.signOut();
@@ -45,7 +43,6 @@ class UserModel {
 
   // ログアウト
   Future<void> logOut() async {
-    print("HERE13");
     try {
       await auth.signOut();
     } on FirebaseAuthException catch (error) {

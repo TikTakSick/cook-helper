@@ -51,13 +51,11 @@ class AuthController extends StateNotifier<User?> {
 
   // ユーザ名取得
   String? readUserName() {
-    print("HERE2");
     return userModel!.userName;
   }
 
   // ユーザID取得
   String? readUserID() {
-    print("HERE3");
     return userModel!.uid;
   }
 
@@ -75,7 +73,6 @@ class AuthController extends StateNotifier<User?> {
 
   // ログアウト
   Future<bool> logOut({required context}) async {
-    print("HERE5");
     try {
       await userModel!.logOut();
       _navigateToLoginPage(context: context);
@@ -93,7 +90,6 @@ class AuthController extends StateNotifier<User?> {
 
   // ユーザ削除
   Future<bool> delete({required context}) async {
-    print("HERE6");
     try {
       await userModel!.delete();
       _navigateToLoginPage(context: context);
