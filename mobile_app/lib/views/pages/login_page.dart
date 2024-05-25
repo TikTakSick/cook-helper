@@ -136,8 +136,8 @@ class LoginPageState extends ConsumerState<LoginPage> {
                           setIsError(boolean: false);
                         } else {
                           setIsError(boolean: true);
-                          setInfoMessage(message);
                         }
+                        setInfoMessage(message);
                       })
                 ])),
       ),
