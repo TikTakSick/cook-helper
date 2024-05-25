@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // views_utils
@@ -9,7 +8,7 @@ import '../utils/text_styles.dart';
 
 // controllers
 import '../../controllers/pages/home_page_controller.dart';
-import '../../controllers/user_controller.dart';
+import '../../controllers/auth_controller.dart';
 
 // ホーム画面用Widget
 class MyPage extends ConsumerWidget {
@@ -20,11 +19,10 @@ class MyPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // ユーザを取得する．
-    final User? user = ref.watch(userProvider);
-    final UserController userController = ref.read(userProvider.notifier);
+    final user = ref.watch(authControllerProvider);
+    final authController = ref.watch(authControllerProvider.notifier);
     //  //ユーザ名取得
-    final String currentUserName =
-        ref.read(userProvider.notifier).readUserName();
+    final String? currentUserName = authController.readUserName();
 
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
@@ -38,14 +36,22 @@ class MyPage extends ConsumerWidget {
                 color: CommonColors.subprimaryColor,
               ),
               // ログアウトする．
-              onPressed: () => userController.logOut(context: context)),
+              onPressed: () => authController.logOut(context: context)),
         ],
       ),
       body: SingleChildScrollView(
-          child: Center(
-        child: Container(
-            padding: const EdgeInsets.all(24), child: Text("ログイン情報：${user}")),
-      )),
+          child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            SingleChildScrollView(
+                child: Text(
+                    overflow: TextOverflow.ellipsis, "ユーザ名：$currentUserName")),
+          ],
+        ),
+        Container(
+            padding: const EdgeInsets.all(24), child: Text("ログイン情報: $user"))
+      ])),
       // 下ボタン
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,

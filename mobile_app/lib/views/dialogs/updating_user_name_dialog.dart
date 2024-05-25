@@ -7,7 +7,7 @@ import '../utils/text_styles.dart';
 import '../utils/button_styles.dart';
 import '../utils/colors.dart';
 // controllers
-import '../../controllers/user_controller.dart';
+import '../../controllers/auth_controller.dart';
 import '../../controllers/dialogs/setting_dialog_controller.dart';
 
 // ユーザ名変更のダイアログを実装している．
@@ -22,21 +22,22 @@ class UpdatingUserNameDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // UserProviderを呼び出す．
-    final UserController userController = ref.read(userProvider.notifier);
+    final AuthController? authController =
+        ref.watch(authControllerProvider.notifier);
     // ユーザ名を取得し，テキストフィールドに入力する．
-    String currentUserName = userController.readUserName();
+    String? currentUserName = authController!.readUserName();
 
     return UpdatingUserNameDialogButton(
-        userController: userController, currentUserName: currentUserName);
+        authController: authController, currentUserName: currentUserName!);
   }
 }
 
 // ダイアログボタン部分
 class UpdatingUserNameDialogButton extends StatefulWidget {
-  final UserController userController;
+  final authController;
   final String currentUserName;
   const UpdatingUserNameDialogButton(
-      {super.key, required this.userController, required this.currentUserName});
+      {super.key, required this.authController, required this.currentUserName});
 
   @override
   UpdatingUserNameDialogButtonState createState() =>
@@ -81,7 +82,7 @@ class UpdatingUserNameDialogButtonState
                 });
 
                 // ユーザ名変更の操作を行う.
-                bool result = await widget.userController
+                bool result = await widget.authController
                     .updateUserName(userName: userNameController.text);
                 if (!context.mounted) {
                   return;

@@ -8,8 +8,8 @@ import 'views/pages/my_page.dart';
 import 'views/pages/login_page.dart';
 import 'views/utils/colors.dart';
 
-// controller
-import 'controllers/user_controller.dart';
+// controllers
+import 'controllers/auth_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,4 +1,4 @@
-import 'package:cook_helper_mobile_app/controllers/user_controller.dart';
+import 'package:cook_helper_mobile_app/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -18,8 +18,9 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // userProviderを通して，userControllerを読み込む．
-    final UserController userController = ref.read(userProvider.notifier);
+    // authControllerProviderを通して，authControllerを読み込む．
+    final AuthController? authController =
+        ref.watch(authControllerProvider.notifier);
 
     return Scaffold(
         backgroundColor: CommonColors.pageBackgroundColor,
@@ -27,20 +28,24 @@ class SettingPage extends ConsumerWidget {
           title: PageTitle(pageTitleName: titleName),
           backgroundColor: CommonColors.primaryColor,
         ),
-        body: SettingPageBody(userController: userController));
+        body: SettingPageBody(authController: authController!));
   }
 }
 
 class SettingPageBody extends StatefulWidget {
-  final UserController userController;
-  const SettingPageBody({super.key, required this.userController});
+  final AuthController authController;
+  const SettingPageBody({super.key, required this.authController});
 
   @override
   SettingPageBodyState createState() => SettingPageBodyState();
 }
 
 class SettingPageBodyState extends State<SettingPageBody> {
+  // ログアウトボタン
   bool logOutButtonPressed = false;
+  // 退会ボタン
+  bool deleteButtonPressed = false;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,18 +63,52 @@ class SettingPageBodyState extends State<SettingPageBody> {
                   .showUpdatingUserNameDialog(context: context);
             },
           ),
+          const Gap(10),
+          // ログアウト
           ElevatedButton(
-              style: SettingPageButton.style,
-              child: logOutButtonPressed
-                  ? const CircularProgressIndicator(
-                      strokeWidth: 2.0, color: CommonColors.textColor)
-                  : const Text('ログアウト', style: elevatedButtonTextStyle),
-              onPressed: () async {
-                setState(() {
-                  logOutButtonPressed = true;
-                });
-                await widget.userController.logOut(context: context);
-              }),
+            style: SettingPageButton.style,
+            child: logOutButtonPressed
+                ? const CircularProgressIndicator(
+                    strokeWidth: 2.0, color: CommonColors.textColor)
+                : const Text('ログアウト', style: elevatedButtonTextStyle),
+            onPressed: () async {
+              setState(() {
+                logOutButtonPressed = true;
+              });
+              await widget.authController.logOut(context: context);
+            },
+          ),
+          const Gap(10),
+          // 退会
+          ElevatedButton(
+            style: SettingPageButton.style,
+            child: deleteButtonPressed
+                ? const CircularProgressIndicator(
+                    strokeWidth: 2.0, color: CommonColors.textColor)
+                : const Text('退会', style: elevatedButtonTextStyle),
+            onPressed: () async {
+              setState(() {
+                deleteButtonPressed = true;
+              });
+              bool result =
+                  await widget.authController.delete(context: context);
+              print("$result");
+            },
+          ),
+          const Gap(10),
+          ElevatedButton(
+            style: SettingPageButton.style,
+            child: logOutButtonPressed
+                ? const CircularProgressIndicator(
+                    strokeWidth: 2.0, color: CommonColors.textColor)
+                : const Text('ログアウト', style: elevatedButtonTextStyle),
+            onPressed: () async {
+              setState(() {
+                logOutButtonPressed = true;
+              });
+              await widget.authController.logOut(context: context);
+            },
+          ),
         ],
       ),
     );
