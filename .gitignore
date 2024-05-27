@@ -1,5 +1,7 @@
-backend/test_ai/.env
-backend/test_ai/service-account-file.json
-backend/test_ai/vertex-ai-421614-0980ca35d895.json
+backend/*
+cook_venv/
+# backend/test_ai/.env
+# backend/test_ai/service-account-file.json
+# backend/test_ai/vertex-ai-421614-0980ca35d895.json
 database_design/database_recipe_url.txt
 memo.md
