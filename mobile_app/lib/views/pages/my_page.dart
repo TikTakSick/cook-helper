@@ -3,7 +3,7 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
-// views_utils
+// utils
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import '../utils/text_styles.dart';
@@ -12,6 +12,7 @@ import '../utils/text_styles.dart';
 import '../../controllers/pages/my_page_controller.dart';
 import '../../controllers/auth_controller.dart';
 
+// BottomeNavigationBarItemの設定
 const recipeAddPageValue = 0;
 const randomRecipePageValue = 1;
 const settingPageValue = 2;
@@ -25,7 +26,7 @@ const Map<int, BottomNavigationBarItem> bottomNavigationBarItemMap = {
       BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
 };
 
-// ホーム画面用Widget
+// マイページ画面用Widget
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
 
