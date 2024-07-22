@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
-import 'text_styles.dart';
+import '../utils/colors.dart';
+import '../utils/text_styles.dart';
 
 // 何かしらのデータベースに対する操作の結果を表示するダイアログ
 class ResultDialog extends StatelessWidget {
