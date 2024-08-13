@@ -102,6 +102,7 @@ class MyPage extends ConsumerWidget {
             ])
           ],
         ),
+        // レシピ表示部分．
         Container(
             padding: const EdgeInsets.all(24), child: Text("ログイン情報: $user"))
       ])),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // services
 import '../services/recipe_service.dart';
@@ -22,8 +21,7 @@ class RecipeController {
   }) {
     // データベース追加
     try {
-      RecipeService().addToFirestore(
-        uid: uid,
+      RecipeService(uid: uid).addToFirestore(
         dishName: dishName,
         recipeType: recipeType,
         ingredients: ingredients,
@@ -48,8 +46,7 @@ class RecipeController {
   }) {
     // データベース内容更新．
     try {
-      RecipeService().updateToFirestore(
-        uid: uid,
+      RecipeService(uid: uid).updateToFirestore(
         recipeId: recipeId,
         dishName: dishName,
         recipeType: recipeType,
@@ -66,6 +63,3 @@ class RecipeController {
 
   // レシピ読み出し
 }
-
-// レシピの削除に関しては，recipesをサブコレクションとして使用しているため，
-// 退会時の処理には向かないのかなぁ
