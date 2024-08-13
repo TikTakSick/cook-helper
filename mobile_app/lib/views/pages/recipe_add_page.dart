@@ -130,8 +130,8 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
 
   // Firestoreにレシピを追加する．
   bool _addRecipeToFirestore({required uid}) {
-    RecipeController recipeController = RecipeController.setDbRef(uid);
-    bool result = recipeController.addRecipeToFirestore(
+    RecipeController recipeController = RecipeController(uid: uid);
+    bool result = recipeController.addToFirestore(
       dishName: dishNameController.text,
       recipeType: recipeTypeController.text,
       ingredients: ingredientsController.text,

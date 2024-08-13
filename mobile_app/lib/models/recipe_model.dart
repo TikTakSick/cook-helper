@@ -20,17 +20,17 @@ class Recipe {
 
   // Firestoreからデータを取得する際に利用する．
   factory Recipe.fromFirestore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    QueryDocumentSnapshot<Map<String, dynamic>> recipeDocumentSnapshot,
   ) {
     // Json型データを取得
-    final recipeDocument = snapshot.data();
+    final recipeDocument = recipeDocumentSnapshot.data();
     return Recipe(
-      recipeId: recipeDocument?['recipeId'],
-      dishName: recipeDocument?['dishName'],
-      recipeType: recipeDocument?['recipeType'],
-      ingredients: recipeDocument?['ingredients'],
-      instructions: recipeDocument?['instructions'],
-      url: recipeDocument?['url'],
+      recipeId: recipeDocument['recipeId'],
+      dishName: recipeDocument['dishName'],
+      recipeType: recipeDocument['recipeType'],
+      ingredients: recipeDocument['ingredients'],
+      instructions: recipeDocument['instructions'],
+      url: recipeDocument['url'],
     );
   }
 
@@ -43,23 +43,5 @@ class Recipe {
       if (instructions != null) 'instructions': instructions,
       if (url != null) 'url': url,
     };
-  }
-
-  // レシピ追加
-  Future<void> addToFirestore({
-    required CollectionReference recipesCollectionRef,
-  }) async {
-    await recipesCollectionRef.add(toFirestore()).then((documentSnapshot) =>
-        {print("Added Data with ID: ${documentSnapshot.id}")});
-  }
-
-  // レシピ内容編集
-  Future<void> updateToFirestore({
-    required CollectionReference recipesCollectionRef,
-  }) async {
-    await recipesCollectionRef
-        .doc(recipeId)
-        .update(toFirestore())
-        .then((value) => print("DocumentSnapshot successfully updated!"));
   }
 }

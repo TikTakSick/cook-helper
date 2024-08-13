@@ -67,7 +67,7 @@ class AuthController extends StateNotifier<UserModel?> {
       final User? user = await state!
           .signInWithEmailAndPassword(email: email, password: password);
       if (user != null) {
-        print("ログインしました:\n ${user.email} , ${user.uid}");
+        debugPrint("ログインしました:\n ${user.email} , ${user.uid}");
         // ログイン成功したので，ホーム画面に遷移．
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
@@ -89,7 +89,7 @@ class AuthController extends StateNotifier<UserModel?> {
       final User? user = await state!
           .createUserWithEmailAndPassword(email: email, password: password);
       if (user != null) {
-        print("ユーザ登録しました:\n ${user.email} , ${user.uid}");
+        debugPrint("ユーザ登録しました:\n ${user.email} , ${user.uid}");
         // ユーザ登録に成功したので，ホーム画面に遷移する．
         await Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) {
@@ -110,7 +110,7 @@ class AuthController extends StateNotifier<UserModel?> {
       await state!.sendPasswordResetEmail(email: email);
       return null;
     } on FirebaseAuthException catch (error) {
-      print(error.message.toString());
+      debugPrint(error.message.toString());
       return error.message.toString();
     }
   }
@@ -121,7 +121,7 @@ class AuthController extends StateNotifier<UserModel?> {
       await state!.updateUserName(userName: userName);
       return success;
     } on FirebaseAuthException catch (error) {
-      print("$error");
+      debugPrint("$error");
       return !success;
     }
   }
@@ -133,7 +133,7 @@ class AuthController extends StateNotifier<UserModel?> {
       _navigateToLoginPage(context: context);
       return success;
     } catch (e) {
-      // print("${e}");
+      // debugPrint("${e}");
       return !success;
     }
   }
@@ -145,7 +145,7 @@ class AuthController extends StateNotifier<UserModel?> {
       _navigateToLoginPage(context: context);
       return success;
     } catch (e) {
-      print("${e}");
+      debugPrint("${e}");
       return !success;
     }
   }
