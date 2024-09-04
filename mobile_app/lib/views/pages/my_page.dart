@@ -12,6 +12,12 @@ import '../utils/text_styles.dart';
 import '../../controllers/pages/my_page_controller.dart';
 import '../../controllers/auth_controller.dart';
 
+// models
+import '../../models/recipe_model.dart';
+
+// providers
+import "../../providers/recipes_provider.dart";
+
 // BottomeNavigationBarItemの設定
 const recipeAddPageValue = 0;
 const randomRecipePageValue = 1;
@@ -36,9 +42,13 @@ class MyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ユーザを取得する．
     final user = ref.watch(authControllerProvider);
+    final String? uid = user?.uid;
     final authController = ref.watch(authControllerProvider.notifier);
     //  //ユーザ名取得
     final String? currentUserName = authController.readUserName();
+
+    // レシピリストを取得する．
+    final recipes = ref.watch(recipeProvider(uid));
 
     // BottomNavigationBarItemのリスト
     List<BottomNavigationBarItem> bottomNavigationBarItemList =
@@ -102,9 +112,48 @@ class MyPage extends ConsumerWidget {
             ])
           ],
         ),
-        // レシピ表示部分．
-        Container(
-            padding: const EdgeInsets.all(24), child: Text("ログイン情報: $user"))
+        Text("ログイン情報: $user"),
+        const Gap(30),
+        //レシピ表示部分．
+        recipes.when(
+          data: (recipes) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                final recipe = recipes[index];
+                return Column(children: [
+                  const Divider(),
+                  ListTile(
+                    title: Text(
+                      recipe.dishName ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(recipe.recipeType ?? ""),
+                    leading: const CircleAvatar(
+                      radius: 30,
+                      backgroundColor: CommonColors.primaryColor,
+                      child: Icon(
+                        Icons.restaurant,
+                        size: 40,
+                        color: CommonColors.subprimaryColor,
+                      ),
+                    ),
+                    onTap: () {
+                      //レシピ詳細画面に遷移する．
+                      HomePageController().navigatorToRecipeDetailPage(
+                          context: context, recipe: recipe);
+                    },
+                  ),
+                ]);
+              },
+            );
+          },
+          loading: () => const CircularProgressIndicator(),
+          error: (error, stackTrace) => Text("Error: $error"),
+        ),
+        const Divider(),
       ])),
       // 下ボタン
       bottomNavigationBar: BottomNavigationBar(

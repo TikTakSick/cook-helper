@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/recipe_model.dart';
 
 class RecipeService {
-  final String uid;
+  final String? uid;
   final CollectionReference recipesCollectionRef;
 
   // コンストラクタ
@@ -62,10 +62,18 @@ class RecipeService {
   }
 
   // レシピ読みだし
-  Stream<List<Recipe>> streamRecipesFromFirestore() {
-    return recipesCollectionRef.snapshots().map((snapshot) => snapshot.docs
-        .map((recipeDocumnet) => Recipe.fromFirestore(
-            recipeDocumnet as QueryDocumentSnapshot<Map<String, dynamic>>))
-        .toList());
+  Stream streamRecipesFromFirestore() {
+    return recipesCollectionRef.snapshots().map((snapshot) {
+      final recipes = snapshot.docs
+          .map((recipeDocument) => Recipe.fromFirestore(
+              recipeDocument as QueryDocumentSnapshot<Map<String, dynamic>>))
+          .toList();
+      //デバッグ出力
+
+      // for (var recipe in recipes) {
+      //   debugPrint("Recipe: ${recipe.dishName}, ${recipe.recipeId}");
+      // }
+      return recipes;
+    });
   }
 }
