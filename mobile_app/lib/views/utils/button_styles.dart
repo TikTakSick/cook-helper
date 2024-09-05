@@ -22,6 +22,18 @@ class SettingPageButton {
   );
 }
 
+class RecipeDetailPageButton {
+  static ButtonStyle style = ElevatedButton.styleFrom(
+    fixedSize: const Size(500, 2),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0),
+    ),
+    side: const BorderSide(color: CommonColors.subprimaryColor),
+    backgroundColor: CommonColors.primaryColor,
+    foregroundColor: Colors.black,
+  );
+}
+
 class RecipeAddPageButton {
   static ButtonStyle style = ElevatedButton.styleFrom(
     fixedSize: const Size(500, 2),

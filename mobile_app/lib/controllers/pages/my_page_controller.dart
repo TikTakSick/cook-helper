@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import '../../views/pages/my_page.dart';
 import '../../views/pages/setting_page.dart';
 import '../../views/pages/recipe_add_page.dart';
-import '../../views/pages/recipe_page.dart';
+import '../../views/pages/recipe_detail_page.dart';
 
 class HomePageController {
   // レシピが押された時の動作
   navigatorToRecipeDetailPage({required context, required recipe}) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return RecipePage(recipe: recipe);
+      // return WebViewContainer(url: "https://flutter.dev");
+      return RecipeDetailPage(recipe: recipe);
     }));
   }
 
