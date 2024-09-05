@@ -11,23 +11,33 @@ import '../utils/text_styles.dart';
 // pages
 import "../../controllers/pages/recipe_detail_page_controller.dart";
 
+// controllers
+import '../../controllers/recipe_controller.dart';
+
 // models
 import '../../models/recipe_model.dart';
 
-class RecipeDetailPage extends StatelessWidget {
+class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
+  final String uid;
   final RecipeDetailPageController pageController;
 
   // コンストラクタ
-  RecipeDetailPage({super.key, required this.recipe})
+  RecipeDetailPage({super.key, required this.recipe, required this.uid})
       : pageController = RecipeDetailPageController(recipe: recipe);
 
+  @override
+  State<RecipeDetailPage> createState() => _RecipeDetailPageState();
+}
+
+class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  bool recipeDeleteButtonPushed = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: CommonColors.pageBackgroundColor,
         appBar: AppBar(
-          title: PageTitle(pageTitleName: recipe.dishName ?? ""),
+          title: PageTitle(pageTitleName: widget.recipe.dishName ?? ""),
           backgroundColor: CommonColors.primaryColor,
         ),
         body: SingleChildScrollView(
@@ -36,19 +46,48 @@ class RecipeDetailPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                RecipeCard(recipe: recipe),
+                RecipeCard(recipe: widget.recipe),
                 const Gap(10),
-                if (recipe.recipeType != "Original Recipe") ...{
+                if (widget.recipe.recipeType != "Original Recipe") ...{
                   ElevatedButton(
                     style: SettingPageButton.style,
                     child:
                         const Text('サイトページを表示', style: elevatedButtonTextStyle),
                     onPressed: () {
-                      pageController.navigatorToRecipeSitePage(
-                          context: context, recipeUrl: recipe.url ?? "");
+                      widget.pageController.navigatorToRecipeSitePage(
+                          context: context, recipeUrl: widget.recipe.url ?? "");
                     },
                   )
                 },
+                const Gap(10),
+                ElevatedButton(
+                  style: SettingPageButton.style,
+                  child: recipeDeleteButtonPushed
+                      ? const CircularProgressIndicator(
+                          strokeWidth: 2.0, color: CommonColors.textColor)
+                      : const Text('このレシピを削除', style: elevatedButtonTextStyle),
+                  onPressed: () {
+                    setState(() {
+                      recipeDeleteButtonPushed = true;
+                    });
+                    bool result = RecipeController(uid: widget.uid)
+                        .deleteFromFirestore(
+                            recipeId: widget.recipe.recipeId ?? "");
+                    if (!context.mounted) {
+                      return;
+                    }
+                    // ユーザ名変更捜査の結果を表示する．
+                    Navigator.pop(context);
+                    if (result) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('レシピを削除しました')));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('レシピ削除に失敗しました')));
+                    }
+                  },
+                ),
+                const Gap(100),
                 // レシピのwebページを表示させるボタン
               ]),
         )));

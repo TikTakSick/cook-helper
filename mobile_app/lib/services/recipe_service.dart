@@ -45,8 +45,8 @@ class RecipeService {
     required String instructions,
     required String url,
   }) async {
-    // レシピインスタンス作成．
     Recipe recipe = Recipe(
+      recipeId: recipeId,
       dishName: dishName,
       recipeType: recipeType,
       ingredients: ingredients,
@@ -74,6 +74,18 @@ class RecipeService {
       //   debugPrint("Recipe: ${recipe.dishName}, ${recipe.recipeId}");
       // }
       return recipes;
+    });
+  }
+
+  // レシピ削除
+  Future deleteFromFirestore({
+    required String recipeId,
+  }) async {
+    // 参照先作成
+    DocumentReference recipeDocumentRef = recipesCollectionRef.doc(recipeId);
+    // 削除
+    await recipeDocumentRef.delete().then((value) {
+      debugPrint("RecipeDocument  successfully deleted!");
     });
   }
 }

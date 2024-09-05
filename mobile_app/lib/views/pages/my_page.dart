@@ -42,14 +42,13 @@ class MyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // ユーザを取得する．
     final user = ref.watch(authControllerProvider);
-    final String? uid = user?.uid;
+    final String? uid = user!.uid;
+
     final authController = ref.watch(authControllerProvider.notifier);
     //  //ユーザ名取得
     final String? currentUserName = authController.readUserName();
 
-    // レシピリストを取得する．
-    final recipes = ref.watch(recipeProvider(uid));
-
+    final recipes = ref.watch(recipeProvider(uid!));
     // BottomNavigationBarItemのリスト
     List<BottomNavigationBarItem> bottomNavigationBarItemList =
         bottomNavigationBarItemMap.values.toList();
@@ -60,13 +59,9 @@ class MyPage extends ConsumerWidget {
         title: PageTitle(pageTitleName: titleName),
         backgroundColor: CommonColors.primaryColor,
         leading: IconButton(
-          onPressed: () async {
-            // ホーム画面更新
-            await Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) {
-                return const MyPage();
-              }),
-            );
+          onPressed: () {
+            ref.refresh(authControllerProvider);
+            ref.refresh(recipeProvider(uid));
           },
           icon: const Icon(
             Icons.food_bank,
@@ -86,75 +81,87 @@ class MyPage extends ConsumerWidget {
         ],
       ),
       body: SingleChildScrollView(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        const Gap(10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+        controller: ScrollController(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(children: [
-              Text(overflow: TextOverflow.ellipsis, "ユーザ名：$currentUserName "),
-              const Text("--上部ボタンの説明--"),
-              const Gap(3),
-              const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Icon(
-                  Icons.food_bank,
-                ),
-                Text("：マイページ更新")
-              ]),
-              const Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Icon(
-                  Icons.logout,
-                ),
-                Text("：      ログアウト")
-              ]),
-              const Gap(3),
-              const Text("---------------------"),
-            ])
+            const Gap(10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Column(children: [
+                  Text(
+                      overflow: TextOverflow.ellipsis,
+                      "ユーザ名：$currentUserName "),
+                  const Text("--上部ボタンの説明--"),
+                  const Gap(3),
+                  const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.food_bank,
+                        ),
+                        Text("：マイページ更新")
+                      ]),
+                  const Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.logout,
+                        ),
+                        Text("：      ログアウト")
+                      ]),
+                  const Gap(3),
+                  const Text("---------------------"),
+                ])
+              ],
+            ),
+            Text("ログイン情報: $user"),
+            const Gap(30),
+            //レシピ表示部分．
+            recipes.when(
+              data: (recipes) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: recipes.length,
+                  itemBuilder: (context, index) {
+                    final recipe = recipes[index];
+                    return Column(children: [
+                      const Divider(),
+                      ListTile(
+                        title: Text(
+                          recipe.dishName ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(recipe.recipeType ?? ""),
+                        leading: const CircleAvatar(
+                          radius: 30,
+                          backgroundColor: CommonColors.primaryColor,
+                          child: Icon(
+                            Icons.restaurant,
+                            size: 40,
+                            color: CommonColors.subprimaryColor,
+                          ),
+                        ),
+                        onTap: () {
+                          //レシピ詳細画面に遷移する．
+                          HomePageController().navigatorToRecipeDetailPage(
+                              context: context, recipe: recipe, uid: uid);
+                        },
+                      ),
+                    ]);
+                  },
+                );
+              },
+              loading: () => const CircularProgressIndicator(),
+              error: (error, stackTrace) => Text("Error: $error"),
+            ),
+            const Divider(),
+            const Gap(100),
           ],
         ),
-        Text("ログイン情報: $user"),
-        const Gap(30),
-        //レシピ表示部分．
-        recipes.when(
-          data: (recipes) {
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: recipes.length,
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                return Column(children: [
-                  const Divider(),
-                  ListTile(
-                    title: Text(
-                      recipe.dishName ?? "",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(recipe.recipeType ?? ""),
-                    leading: const CircleAvatar(
-                      radius: 30,
-                      backgroundColor: CommonColors.primaryColor,
-                      child: Icon(
-                        Icons.restaurant,
-                        size: 40,
-                        color: CommonColors.subprimaryColor,
-                      ),
-                    ),
-                    onTap: () {
-                      //レシピ詳細画面に遷移する．
-                      HomePageController().navigatorToRecipeDetailPage(
-                          context: context, recipe: recipe);
-                    },
-                  ),
-                ]);
-              },
-            );
-          },
-          loading: () => const CircularProgressIndicator(),
-          error: (error, stackTrace) => Text("Error: $error"),
-        ),
-        const Divider(),
-      ])),
+      ),
       // 下ボタン
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,

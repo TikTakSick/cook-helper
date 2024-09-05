@@ -61,5 +61,15 @@ class RecipeController {
     }
   }
 
-  // レシピ読み出し
+  // レシピ削除
+  bool deleteFromFirestore({required String recipeId}) {
+    // データベース削除
+    try {
+      RecipeService(uid: uid).deleteFromFirestore(recipeId: recipeId);
+      return success;
+    } catch (error) {
+      debugPrint("Error deleting recipe document: $error");
+      return !success;
+    }
+  }
 }

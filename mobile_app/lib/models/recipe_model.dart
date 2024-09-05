@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Recipe {
   final String? recipeId; // Firestore側で自動的に作成されるID
@@ -23,9 +24,10 @@ class Recipe {
     QueryDocumentSnapshot<Map<String, dynamic>> recipeDocumentSnapshot,
   ) {
     // Json型データを取得
+    final recipeDocumentId = recipeDocumentSnapshot.id;
     final recipeDocument = recipeDocumentSnapshot.data();
     return Recipe(
-      recipeId: recipeDocument['recipeId'],
+      recipeId: recipeDocumentId,
       dishName: recipeDocument['dishName'],
       recipeType: recipeDocument['recipeType'],
       ingredients: recipeDocument['ingredients'],
