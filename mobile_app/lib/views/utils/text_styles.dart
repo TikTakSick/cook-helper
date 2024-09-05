@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
+// RecipeCard TextStyle
+const TextStyle recipeAttributeTextStyle = TextStyle(fontSize: 25);
+
+const TextStyle recipeDetailTextStyle = TextStyle(fontSize: 18);
+
 // Page Title TextStyle
 const TextStyle pageTitleTextStyle =
     TextStyle(fontSize: 20, fontWeight: FontWeight.bold);

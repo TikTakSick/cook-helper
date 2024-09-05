@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const recipeDetailColors = Color.fromRGBO(190, 210, 175, 1);
+
 class CommonColors {
   static const Color textColor = Colors.black;
   static const Color pageBackgroundColor = Color.fromARGB(255, 248, 237, 216);
