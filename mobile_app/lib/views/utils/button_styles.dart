@@ -4,6 +4,9 @@ import 'colors.dart';
 class AuthButton {
   static ButtonStyle style = ElevatedButton.styleFrom(
     fixedSize: const Size(300, 1),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0),
+    ),
     side: const BorderSide(color: CommonColors.subprimaryColor),
     backgroundColor: CommonColors.primaryColor,
     foregroundColor: Colors.black,
@@ -22,7 +25,7 @@ class SettingPageButton {
   );
 }
 
-class RecipeDetailPageButton {
+class RecipeAddPageButton {
   static ButtonStyle style = ElevatedButton.styleFrom(
     fixedSize: const Size(500, 2),
     shape: RoundedRectangleBorder(
@@ -34,9 +37,21 @@ class RecipeDetailPageButton {
   );
 }
 
-class RecipeAddPageButton {
+class RecipeDetailPageButton {
   static ButtonStyle style = ElevatedButton.styleFrom(
-    fixedSize: const Size(500, 2),
+    fixedSize: const Size(400, 1),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(0),
+    ),
+    side: const BorderSide(color: CommonColors.subprimaryColor),
+    backgroundColor: CommonColors.primaryColor,
+    foregroundColor: Colors.black,
+  );
+}
+
+class RecipeEditPageButton {
+  static ButtonStyle style = ElevatedButton.styleFrom(
+    fixedSize: const Size(400, 1),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(0),
     ),

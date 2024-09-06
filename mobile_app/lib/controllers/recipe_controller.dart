@@ -6,10 +6,12 @@ import '../services/recipe_service.dart';
 // RecipeController
 class RecipeController {
   final String uid;
+  final RecipeService recipeService;
   final bool success = true;
 
   // コンストラクタ
-  RecipeController({required this.uid});
+  RecipeController({required this.uid})
+      : recipeService = RecipeService(uid: uid);
 
   // レシピ追加
   bool addToFirestore({
@@ -21,7 +23,7 @@ class RecipeController {
   }) {
     // データベース追加
     try {
-      RecipeService(uid: uid).addToFirestore(
+      recipeService.addToFirestore(
         dishName: dishName,
         recipeType: recipeType,
         ingredients: ingredients,
@@ -36,7 +38,7 @@ class RecipeController {
   }
 
   // レシピ内容編集
-  bool updateRecipeToFirestore({
+  bool updateToFirestore({
     required String recipeId,
     required String dishName,
     required String recipeType,
@@ -46,7 +48,7 @@ class RecipeController {
   }) {
     // データベース内容更新．
     try {
-      RecipeService(uid: uid).updateToFirestore(
+      recipeService.updateToFirestore(
         recipeId: recipeId,
         dishName: dishName,
         recipeType: recipeType,
@@ -65,7 +67,7 @@ class RecipeController {
   bool deleteFromFirestore({required String recipeId}) {
     // データベース削除
     try {
-      RecipeService(uid: uid).deleteFromFirestore(recipeId: recipeId);
+      recipeService.deleteFromFirestore(recipeId: recipeId);
       return success;
     } catch (error) {
       debugPrint("Error deleting recipe document: $error");

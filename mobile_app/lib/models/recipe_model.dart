@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class Recipe {
   final String? recipeId; // Firestore側で自動的に作成されるID

@@ -20,11 +20,9 @@ import '../../models/recipe_model.dart';
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
   final String uid;
-  final RecipeDetailPageController pageController;
 
   // コンストラクタ
-  RecipeDetailPage({super.key, required this.recipe, required this.uid})
-      : pageController = RecipeDetailPageController(recipe: recipe);
+  const RecipeDetailPage({super.key, required this.recipe, required this.uid});
 
   @override
   State<RecipeDetailPage> createState() => _RecipeDetailPageState();
@@ -32,6 +30,17 @@ class RecipeDetailPage extends StatefulWidget {
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
   bool recipeDeleteButtonPushed = false;
+  late RecipeDetailPageController recipePageController;
+
+  @override
+  void initState() {
+    super.initState();
+    recipePageController = RecipeDetailPageController(
+      recipe: widget.recipe,
+      uid: widget.uid,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,20 +57,32 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               children: [
                 RecipeCard(recipe: widget.recipe),
                 const Gap(10),
+                // サイトページ表示ボタン
                 if (widget.recipe.recipeType != "Original Recipe") ...{
                   ElevatedButton(
-                    style: SettingPageButton.style,
+                    style: RecipeDetailPageButton.style,
                     child:
                         const Text('サイトページを表示', style: elevatedButtonTextStyle),
                     onPressed: () {
-                      widget.pageController.navigatorToRecipeSitePage(
-                          context: context, recipeUrl: widget.recipe.url ?? "");
+                      recipePageController.navigatorToRecipeSitePage(
+                          context: context);
                     },
                   )
                 },
                 const Gap(10),
+                // レシピ編集ボタン
                 ElevatedButton(
-                  style: SettingPageButton.style,
+                  style: RecipeDetailPageButton.style,
+                  child: const Text('レシピを編集', style: elevatedButtonTextStyle),
+                  onPressed: () {
+                    recipePageController.navigatorToRecipeEditPage(
+                        context: context);
+                  },
+                ),
+                const Gap(10),
+                // レシピ削除ボタン
+                ElevatedButton(
+                  style: RecipeDetailPageButton.style,
                   child: recipeDeleteButtonPushed
                       ? const CircularProgressIndicator(
                           strokeWidth: 2.0, color: CommonColors.textColor)
@@ -88,7 +109,6 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   },
                 ),
                 const Gap(100),
-                // レシピのwebページを表示させるボタン
               ]),
         )));
   }

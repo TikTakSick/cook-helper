@@ -27,7 +27,7 @@ const Map<int, BottomNavigationBarItem> bottomNavigationBarItemMap = {
   recipeAddPageValue:
       BottomNavigationBarItem(label: "レシピ追加", icon: Icon(Icons.add)),
   randomRecipePageValue: BottomNavigationBarItem(
-      label: "おまかせレシピ", icon: Icon(CommunityMaterialIcons.chef_hat)),
+      label: "おまかせ", icon: Icon(CommunityMaterialIcons.chef_hat)),
   settingPageValue:
       BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
 };
