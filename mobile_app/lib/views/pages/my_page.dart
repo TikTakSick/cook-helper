@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gap/gap.dart';
 
 // utils
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import '../utils/text_styles.dart';
+
+// pagaes
+import 'login_page.dart';
 
 // controllers
 import '../../controllers/pages/my_page_controller.dart';
@@ -17,6 +21,7 @@ import '../../models/recipe_model.dart';
 
 // providers
 import "../../providers/recipes_provider.dart";
+import '../../providers/auth_provider.dart';
 
 // BottomeNavigationBarItemの設定
 const recipeAddPageValue = 0;
@@ -40,21 +45,22 @@ class MyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ユーザを取得する．
-    final user = ref.watch(authControllerProvider);
-    final String? uid = user!.uid;
+    // ユーザ情報取得
+    final User? user = ref.watch(authUserProvider);
+    final String? uid = user?.uid;
+    final String? currentUserName = user?.displayName;
 
-    final authController = ref.watch(authControllerProvider.notifier);
-    //  //ユーザ名取得
-    final String? currentUserName = authController.readUserName();
+    // 登録レシピ情報取得
+    final recipes = ref.watch(recipesProvider(uid));
 
-    final recipes = ref.watch(recipeProvider(uid!));
     // BottomNavigationBarItemのリスト
     List<BottomNavigationBarItem> bottomNavigationBarItemList =
         bottomNavigationBarItemMap.values.toList();
 
     // myPageController
     final myPageController = MyPageController();
+    final authController = AuthController();
+
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
@@ -62,8 +68,8 @@ class MyPage extends ConsumerWidget {
         backgroundColor: CommonColors.primaryColor,
         leading: IconButton(
           onPressed: () {
-            ref.refresh(authControllerProvider);
-            ref.refresh(recipeProvider(uid));
+            ref.refresh(authUserProvider);
+            ref.refresh(recipesProvider(uid));
           },
           icon: const Icon(
             Icons.food_bank,
@@ -79,7 +85,21 @@ class MyPage extends ConsumerWidget {
                 size: 40,
               ),
               // ログアウトする．
-              onPressed: () => authController.logOut(context: context)),
+              onPressed: () async {
+                final response = await authController.logOut();
+                if (response["isSuccess"]) {
+                  if (!context.mounted) return;
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginPage();
+                      },
+                    ),
+                  );
+                }
+                ;
+              })
         ],
       ),
       body: SingleChildScrollView(
@@ -127,7 +147,7 @@ class MyPage extends ConsumerWidget {
                   shrinkWrap: true,
                   itemCount: recipes.length,
                   itemBuilder: (context, index) {
-                    final recipe = recipes[index];
+                    final Recipe recipe = recipes[index];
                     return Column(children: [
                       const Divider(),
                       ListTile(

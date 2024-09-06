@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/recipe_service.dart';
+import './auth_provider.dart';
 
-final recipeProvider = StreamProvider.family((ref, String? uid) {
-  return RecipeService(uid: uid).streamRecipesFromFirestore();
+final recipesProvider = StreamProvider.family.autoDispose((ref, String? uid) {
+  final authUser = ref.watch(authUserProvider);
+  final RecipeService recipeService = RecipeService(uid: authUser?.uid);
+  return recipeService.streamRecipesFromFirestore();
 });

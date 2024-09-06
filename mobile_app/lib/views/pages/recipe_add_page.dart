@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gap/gap.dart';
 
 // views
@@ -13,10 +14,10 @@ import '../utils/text_styles.dart';
 import "../utils/button_styles.dart";
 
 // controllers
-import '../../controllers/auth_controller.dart';
 import '../../controllers/recipe_controller.dart';
 
-// レシピ追加ページを実装している．
+// providers
+import '../../providers/auth_provider.dart';
 
 class RecipeAddPage extends ConsumerStatefulWidget {
   // UserProviderを呼び出す．
@@ -146,7 +147,8 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
   @override
   Widget build(BuildContext context) {
     // userIDを取得する．
-    final String? uid = ref.read(authControllerProvider.notifier).readUserID();
+    final User? user = ref.watch(authUserProvider);
+    final String? uid = user?.uid;
     // ここにfirestoreのproviderを用意する．
 
     return Scaffold(

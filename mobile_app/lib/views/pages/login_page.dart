@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
+// controllers
 import "../../controllers/auth_controller.dart";
 
-// views_utils
+// views
+import 'my_page.dart';
+
+// utils
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import "../utils/button_styles.dart";
 import "../utils/text_styles.dart";
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends ConsumerState<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
   String? message = '';
@@ -39,10 +41,15 @@ class LoginPageState extends ConsumerState<LoginPage> {
     });
   }
 
+  void moveToMyPage({required BuildContext context}) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return const MyPage();
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final AuthController authController =
-        ref.watch(authControllerProvider.notifier);
+    final authController = AuthController();
 
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
@@ -95,15 +102,22 @@ class LoginPageState extends ConsumerState<LoginPage> {
                     child: const Text('ユーザ登録（サインアップ）',
                         style: elevatedButtonTextStyle),
                     onPressed: () async {
-                      // サインアップ
-                      message =
-                          await authController.createUserWithEmailAndPassword(
-                              context: context,
-                              email: _email,
-                              password: _password);
-                      if (message != null) {
-                        setIsError(boolean: true);
-                        setInfoMessage(message);
+                      // サインアップ・ユーザ登録
+                      final response = await authController.signUp(
+                          email: _email, password: _password);
+                      if (response["isSuccess"]) {
+                        // サインアップに成功したので，ホーム画面に遷移する．
+                        if (!context.mounted) {
+                          return;
+                        }
+                        moveToMyPage(context: context);
+                      }
+                      // サインアップ失敗時の操作
+                      else {
+                        setState(() {
+                          setIsError(boolean: true);
+                          setInfoMessage(response["errorMessage"]);
+                        });
                       }
                     },
                   ),
@@ -113,14 +127,25 @@ class LoginPageState extends ConsumerState<LoginPage> {
                       child: const Text('ログイン', style: elevatedButtonTextStyle),
                       onPressed: () async {
                         // メール・パスワードでログイン
-                        message =
-                            await authController.signInWithEmailAndPassword(
-                                context: context,
-                                email: _email,
-                                password: _password);
-                        if (message != null) {
-                          setIsError(boolean: true);
-                          setInfoMessage(message);
+                        final Map<dynamic, dynamic> response =
+                            await authController.login(
+                          email: _email,
+                          password: _password,
+                        );
+                        if (!context.mounted) {
+                          return;
+                        }
+                        if (response["isSuccess"]) {
+                          // ログインに成功したので，ホーム画面に遷移する．
+                          debugPrint("ユーザ認証に成功しました");
+                          moveToMyPage(context: context);
+                        }
+                        // ログイン失敗時の操作
+                        else {
+                          setState(() {
+                            setIsError(boolean: true);
+                            setInfoMessage(response["errorMessage"]);
+                          });
                         }
                       }),
                   // パスワードリセットボタン
@@ -129,12 +154,15 @@ class LoginPageState extends ConsumerState<LoginPage> {
                       child: const Text('パスワードリセット',
                           style: elevatedButtonTextStyle),
                       onPressed: () async {
-                        message = await authController.sendPasswordResetEmail(
-                            email: _email);
-                        if (message == null) {
+                        final response = await authController
+                            .sendPasswordResetEmail(email: _email);
+                        if (response["isSuccess"]) {
                           message = "パスワードリセット用のメールを送信しました";
-                          setIsError(boolean: false);
+                          setState(() {
+                            setIsError(boolean: false);
+                          });
                         } else {
+                          message = response["errorMessage"];
                           setIsError(boolean: true);
                         }
                         setInfoMessage(message);

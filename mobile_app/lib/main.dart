@@ -8,8 +8,8 @@ import 'views/pages/my_page.dart';
 import 'views/pages/login_page.dart';
 import 'views/utils/colors.dart';
 
-// controllers
-import 'controllers/auth_controller.dart';
+// providers
+import 'providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,14 +35,14 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends ConsumerWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 認証状態に応じて画面遷移する．
-    final authStateAsync = ref.watch(autoStateChangesProvider);
-    return authStateAsync.when(
-      data: (user) => user != null ? MyPage() : const LoginPage(),
+    final authState = ref.watch(authUserChangesProvider);
+    return authState.when(
+      data: (user) => user != null ? const MyPage() : const LoginPage(),
       loading: () => const CircularProgressIndicator(),
       error: (err, stack) => Text("Error: $err"),
     );

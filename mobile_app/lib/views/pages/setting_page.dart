@@ -1,6 +1,4 @@
-import 'package:cook_helper_mobile_app/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 
 // views_utils
@@ -9,18 +7,22 @@ import '../utils/colors.dart';
 import '../utils/text_styles.dart';
 import "../utils/button_styles.dart";
 
+// pages
+import 'login_page.dart';
+
 // controllers
 import "../../controllers/pages/setting_page_controller.dart";
+import '../../controllers/auth_controller.dart';
 
-class SettingPage extends ConsumerStatefulWidget {
+class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
   final String titleName = "その他設定";
 
   @override
-  SettingPageState createState() => SettingPageState();
+  State<SettingPage> createState() => _SettingPageState();
 }
 
-class SettingPageState extends ConsumerState<SettingPage> {
+class _SettingPageState extends State<SettingPage> {
   // ログアウトボタン
   bool logOutButtonPressed = false;
   // 退会ボタン
@@ -29,7 +31,7 @@ class SettingPageState extends ConsumerState<SettingPage> {
   @override
   Widget build(BuildContext context) {
     // authControllerProviderを通して，authControllerを読み込む．
-    final authController = ref.watch(authControllerProvider.notifier);
+    final authController = AuthController();
 
     return Scaffold(
         backgroundColor: CommonColors.pageBackgroundColor,
@@ -60,11 +62,17 @@ class SettingPageState extends ConsumerState<SettingPage> {
                     ? const CircularProgressIndicator(
                         strokeWidth: 2.0, color: CommonColors.textColor)
                     : const Text('ログアウト', style: elevatedButtonTextStyle),
-                onPressed: () async {
+                onPressed: () {
                   setState(() {
                     logOutButtonPressed = true;
                   });
-                  await authController.logOut(context: context);
+                  authController.logOut();
+                  if (mounted) {
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LoginPage();
+                    }));
+                  }
                 },
               ),
               const Gap(10),
@@ -79,8 +87,15 @@ class SettingPageState extends ConsumerState<SettingPage> {
                   setState(() {
                     deleteButtonPressed = true;
                   });
-                  bool result = await authController.delete(context: context);
-                  print("$result");
+                  final response = await authController.delete();
+                  if (response["isSuccess"]) {
+                    if (!context.mounted) return;
+                    Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) {
+                      return const LoginPage();
+                    }));
+                  }
+                  debugPrint(response["errorMessage"]);
                 },
               ),
               const Gap(10),

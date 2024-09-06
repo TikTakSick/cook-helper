@@ -1,152 +1,110 @@
+import 'package:cook_helper_mobile_app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// models
-import '../models/user_model.dart';
-
-// views
-import '../views/pages/login_page.dart';
-import '../views/pages/my_page.dart';
-
-// ユーザの認証状態を提供するProvider
-final autoStateChangesProvider = StreamProvider.autoDispose<User?>((ref) {
-  final firebaseAuth = ref.watch(firebaseAuthProvider);
-  return firebaseAuth.authStateChanges();
-});
-
-// firebaseAuthProvider
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
-  return FirebaseAuth.instance;
-});
-
-// AuthControllerProvider
-final authControllerProvider =
-    StateNotifierProvider<AuthController, UserModel?>((ref) {
-  return AuthController(
-      initialUser: ref.watch(firebaseAuthProvider).currentUser);
-});
 
 // AuthController
-class AuthController extends StateNotifier<UserModel?> {
-  final bool success = true;
-  final _auth = FirebaseAuth.instance;
+class AuthController {
+  final AuthService _authService = AuthService();
 
   // コンストラクタ
-  AuthController({User? initialUser})
-      : super(UserModel(auth: FirebaseAuth.instance, user: initialUser)) {
-    // userの変更を検知して状態を更新
-    _auth.userChanges().listen((user) {
-      state = UserModel(auth: _auth, user: user);
-    });
-  }
+  AuthController();
 
-  // ログインページに戻る
-  Future<void> _navigateToLoginPage({required context}) async {
-    await Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) {
-      return const LoginPage();
-    }), (_) {
-      return false;
-    });
-  }
-
-  // ユーザ名取得
-  String? readUserName() {
-    return state!.userName;
-  }
-
-  // ユーザID取得
-  String? readUserID() {
-    return state!.uid;
+  // メソッドの返り値設定．デフォルトでは，成功とする．
+  Map<String, dynamic> response(
+      {bool isSuccess = true, String? errrorMessage}) {
+    return {
+      "isSuccess": isSuccess,
+      "errorMessage": errrorMessage,
+    };
   }
 
   // ログイン
-  Future<String?> signInWithEmailAndPassword({context, email, password}) async {
+  Future<Map> login({email, password}) async {
     try {
-      final User? user = await state!
-          .signInWithEmailAndPassword(email: email, password: password);
+      final User? user =
+          await _authService.login(email: email, password: password);
       if (user != null) {
+        // ログイン成功時の操作
         debugPrint("ログインしました:\n ${user.email} , ${user.uid}");
-        // ログイン成功したので，ホーム画面に遷移．
-        await Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) {
-            return const MyPage();
-          }),
-        );
-        return null;
+        return response();
       }
-      return null;
+      // ログイン失敗時の操作
+      return response(isSuccess: false);
     } on FirebaseAuthException catch (error) {
-      return error.message.toString();
+      return response(
+        isSuccess: false,
+        errrorMessage: error.message.toString(),
+      );
     }
   }
 
-  // ユーザ登録
-  Future<String?> createUserWithEmailAndPassword(
-      {context, email, password}) async {
+  // サインアップ（ユーザ登録）
+  Future<Map> signUp({required email, required password}) async {
     try {
-      final User? user = await state!
-          .createUserWithEmailAndPassword(email: email, password: password);
+      User? user = await _authService.signUp(email: email, password: password);
       if (user != null) {
-        debugPrint("ユーザ登録しました:\n ${user.email} , ${user.uid}");
+        debugPrint("ユーザ登録しました:\n ${user.displayName},${user.uid}");
         // ユーザ登録に成功したので，ホーム画面に遷移する．
-        await Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) {
-            return const MyPage();
-          }),
-        );
-        return null;
+        return response();
       }
-      return null;
+      return response(isSuccess: false);
     } on FirebaseAuthException catch (error) {
-      return error.message.toString();
+      return response(
+          isSuccess: false, errrorMessage: error.message.toString());
     }
   }
 
   // パスワードリセット
-  Future<String?> sendPasswordResetEmail({email}) async {
+  Future<Map> sendPasswordResetEmail({required email}) async {
     try {
-      await state!.sendPasswordResetEmail(email: email);
-      return null;
+      await _authService.sendPasswordResetEmail(email: email);
+      return response();
     } on FirebaseAuthException catch (error) {
       debugPrint(error.message.toString());
-      return error.message.toString();
-    }
-  }
-
-  // ユーザ名更新
-  Future<bool> updateUserName({required String userName}) async {
-    try {
-      await state!.updateUserName(userName: userName);
-      return success;
-    } on FirebaseAuthException catch (error) {
-      debugPrint("$error");
-      return !success;
+      return response(
+          isSuccess: false, errrorMessage: error.message.toString());
     }
   }
 
   // ログアウト
-  Future<bool> logOut({required context}) async {
+  Future<Map> logOut() async {
     try {
-      await state!.logOut();
-      _navigateToLoginPage(context: context);
-      return success;
-    } catch (e) {
-      // debugPrint("${e}");
-      return !success;
+      await _authService.logOut();
+      return response();
+    } on FirebaseAuthException catch (error) {
+      debugPrint("$error");
+      return response(
+        isSuccess: false,
+        errrorMessage: error.message.toString(),
+      );
+    }
+  }
+
+  // ユーザ表示名更新
+  Future<Map> updateDisplayName({required String userName}) async {
+    try {
+      await _authService.updateDisplayName(userName: userName);
+      return response();
+    } on FirebaseAuthException catch (error) {
+      debugPrint("$error");
+      return response(
+        isSuccess: false,
+        errrorMessage: error.message.toString(),
+      );
     }
   }
 
   // ユーザ削除
-  Future<bool> delete({required context}) async {
+  Future<Map> delete() async {
     try {
-      await state!.delete();
-      _navigateToLoginPage(context: context);
-      return success;
-    } catch (e) {
-      debugPrint("${e}");
-      return !success;
+      await _authService.delete();
+      return response();
+    } on FirebaseAuthException catch (error) {
+      debugPrint("$error");
+      return response(
+        isSuccess: false,
+        errrorMessage: error.message.toString(),
+      );
     }
   }
 }

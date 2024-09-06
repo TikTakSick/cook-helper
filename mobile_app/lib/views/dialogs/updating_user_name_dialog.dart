@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gap/gap.dart';
 
 // views_utils
@@ -10,55 +11,33 @@ import '../utils/colors.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/dialogs/setting_dialog_controller.dart';
 
-// ユーザ名変更のダイアログを実装している．
-// 以下二つの部分に分かれている．
-// - UpdatingUserNameDialog：ダイアログ本体
-// - UpdatingUserNameDialogButton：ダイアログボタン部分
+// providers
+import '../../providers/auth_provider.dart';
 
-// ダイアログボタン本体
-class UpdatingUserNameDialog extends ConsumerWidget {
-  const UpdatingUserNameDialog({super.key});
+class UpdatingUserNameDialog extends ConsumerStatefulWidget {
+  const UpdatingUserNameDialog({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // UserProviderを呼び出す．
-    final AuthController? authController =
-        ref.watch(authControllerProvider.notifier);
-    // ユーザ名を取得し，テキストフィールドに入力する．
-    String? currentUserName = authController!.readUserName();
-
-    return UpdatingUserNameDialogButton(
-        authController: authController, currentUserName: currentUserName!);
-  }
+  UpdatingUserNameDialogState createState() => UpdatingUserNameDialogState();
 }
 
-// ダイアログボタン部分
-class UpdatingUserNameDialogButton extends StatefulWidget {
-  final authController;
-  final String currentUserName;
-  const UpdatingUserNameDialogButton(
-      {super.key, required this.authController, required this.currentUserName});
-
-  @override
-  UpdatingUserNameDialogButtonState createState() =>
-      UpdatingUserNameDialogButtonState();
-}
-
-class UpdatingUserNameDialogButtonState
-    extends State<UpdatingUserNameDialogButton> {
+class UpdatingUserNameDialogState
+    extends ConsumerState<UpdatingUserNameDialog> {
+  // ボタンが押されたかどうかのフラグ
   bool buttonPressed = false;
+
+  // AuthControllerのインスタンス
+  final authController = AuthController();
+
+  // ユーザ名変更用のコントローラ
   final userNameController = TextEditingController();
 
-  @override
-  initState() {
-    super.initState();
-    userNameController.text = widget.currentUserName;
-  }
-
+  late String? currentUserName;
   @override
   Widget build(BuildContext context) {
+    final User? user = ref.watch(authUserProvider);
+    currentUserName = user?.displayName ?? "";
     return AlertDialog(
-        surfaceTintColor: CommonColors.dialogBackgroundColor,
         backgroundColor: CommonColors.dialogBackgroundColor,
         titleTextStyle: dialogTitleTextStyle,
         contentTextStyle: dialogContentTextStyle,
@@ -68,7 +47,7 @@ class UpdatingUserNameDialogButtonState
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Gap(10),
-              Text("現在のユーザ名:  ${widget.currentUserName}"),
+              Text("現在のユーザ名:  $currentUserName"),
               const Gap(10),
               TextFormField(controller: userNameController)
             ])),
@@ -82,15 +61,15 @@ class UpdatingUserNameDialogButtonState
                 });
 
                 // ユーザ名変更の操作を行う.
-                bool result = await widget.authController
-                    .updateUserName(userName: userNameController.text);
+                final response = await authController.updateDisplayName(
+                    userName: userNameController.text);
                 if (!context.mounted) {
                   return;
                 }
                 // ユーザ名変更捜査の結果を表示する．
                 Navigator.pop(context);
                 SettingDialogController().showUpdatingUserNameResultDialog(
-                    context: context, result: result);
+                    context: context, result: response["isSuccess"]);
               },
               child: buttonPressed
                   ? const CircularProgressIndicator(
