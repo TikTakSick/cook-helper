@@ -53,6 +53,8 @@ class MyPage extends ConsumerWidget {
     List<BottomNavigationBarItem> bottomNavigationBarItemList =
         bottomNavigationBarItemMap.values.toList();
 
+    // myPageController
+    final myPageController = MyPageController();
     return Scaffold(
       backgroundColor: CommonColors.pageBackgroundColor,
       appBar: AppBar(
@@ -146,7 +148,7 @@ class MyPage extends ConsumerWidget {
                         ),
                         onTap: () {
                           //レシピ詳細画面に遷移する．
-                          HomePageController().navigatorToRecipeDetailPage(
+                          myPageController.navigatorToRecipeDetailPage(
                               context: context, recipe: recipe, uid: uid);
                         },
                       ),
@@ -183,7 +185,7 @@ class MyPage extends ConsumerWidget {
         items: bottomNavigationBarItemList,
         // タップされたボタンに応じて，画面遷移する．
         onTap: (index) {
-          HomePageController().navigatorByBottomNavigationBarItem(
+          myPageController.navigatorByBottomNavigationBarItem(
               context: context, index: index);
         },
       ),
