@@ -6,7 +6,7 @@ import '../../views/pages/setting_page.dart';
 import '../../views/pages/recipe_add_page.dart';
 import '../../views/pages/recipe_detail_page.dart';
 
-class HomePageController {
+class MyPageController {
   // レシピが押された時の動作
   navigatorToRecipeDetailPage(
       {required context, required recipe, required uid}) async {
