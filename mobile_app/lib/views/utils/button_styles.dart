@@ -3,7 +3,7 @@ import 'colors.dart';
 
 class AuthButton {
   static ButtonStyle style = ElevatedButton.styleFrom(
-    fixedSize: const Size(300, 1),
+    fixedSize: const Size(400, 1),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(0),
     ),

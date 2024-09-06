@@ -232,6 +232,7 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
                             child: AutoSizeTextFormField(
                               minLines: 1,
                               maxLines: 1,
+                              minFontSize: 20,
                               controller: dishNameController,
                               decoration: const InputDecoration(
                                 labelText: '料理名',
@@ -250,6 +251,7 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
                             child: AutoSizeTextFormField(
                               minLines: 1,
                               maxLines: 20,
+                              minFontSize: 20,
                               controller: ingredientsController,
                               decoration: const InputDecoration(
                                   labelText: '材料',
@@ -268,6 +270,7 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
                             child: AutoSizeTextFormField(
                               minLines: 1,
                               maxLines: 50,
+                              minFontSize: 20,
                               controller: instructionsController,
                               decoration: const InputDecoration(
                                 labelText: '作り方',

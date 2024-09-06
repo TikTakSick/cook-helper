@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'colors.dart';
 
-// RecipeCard TextStyle
+// Recipe TextStyle
 const TextStyle recipeAttributeTextStyle = TextStyle(fontSize: 25);
 
 const TextStyle recipeDetailTextStyle = TextStyle(fontSize: 18);
@@ -30,4 +30,4 @@ const TextStyle bottomNavigationBarItemLabelTextStyle =
 
 // RadioListTile TextStyle
 const TextStyle radioListTileTextStyle =
-    TextStyle(color: CommonColors.textColor);
+    TextStyle(fontSize: 23, color: CommonColors.textColor);
