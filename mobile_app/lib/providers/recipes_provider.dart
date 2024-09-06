@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/recipe_model.dart';
 import '../services/recipe_service.dart';
 
 final recipeProvider = StreamProvider.family((ref, String? uid) {
