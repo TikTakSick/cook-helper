@@ -63,7 +63,7 @@ class RecipeService {
 
   // レシピ読みだし
   Stream streamRecipesFromFirestore() {
-    return recipesCollectionRef.snapshots().map((snapshot) {
+    return recipesCollectionRef.orderBy('dishName').snapshots().map((snapshot) {
       final recipes = snapshot.docs
           .map((recipeDocument) => Recipe.fromFirestore(
               recipeDocument as QueryDocumentSnapshot<Map<String, dynamic>>))
