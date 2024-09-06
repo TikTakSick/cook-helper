@@ -84,19 +84,6 @@ class SettingPageState extends ConsumerState<SettingPage> {
                 },
               ),
               const Gap(10),
-              ElevatedButton(
-                style: SettingPageButton.style,
-                child: logOutButtonPressed
-                    ? const CircularProgressIndicator(
-                        strokeWidth: 2.0, color: CommonColors.textColor)
-                    : const Text('ログアウト', style: elevatedButtonTextStyle),
-                onPressed: () async {
-                  setState(() {
-                    logOutButtonPressed = true;
-                  });
-                  await authController.logOut(context: context);
-                },
-              ),
             ],
           ),
         ));
