@@ -1,21 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
 
 class AuthService {
   // プロパティ値
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late final User? _currentUser;
 
   // コンストラクタ
-  AuthService();
-
-  // ユーザ取得
-  User? get currentUser {
-    return _auth.currentUser;
-  }
-
-  // ユーザの認証状態取得
-  Stream<User?> get authStateChanges {
-    return _auth.authStateChanges();
+  AuthService() {
+    _currentUser = _auth.currentUser;
   }
 
   // サインアップ
@@ -47,11 +39,11 @@ class AuthService {
 
   // ユーザ表示名変更
   Future<void> updateDisplayName({required String userName}) async {
-    await currentUser?.updateDisplayName(userName);
+    await _currentUser?.updateDisplayName(userName);
   }
 
   // ユーザ削除
   Future<void> delete() async {
-    await currentUser?.delete();
+    await _currentUser?.delete();
   }
 }
