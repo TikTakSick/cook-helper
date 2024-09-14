@@ -1,3 +1,5 @@
 .gcloudignore
 venv
+.env
+.env.yaml
 service-account-for-fibase-admin.json
