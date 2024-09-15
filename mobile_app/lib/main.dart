@@ -19,17 +19,20 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
   late StreamSubscription _intentDataStreamSubscription;
   List<SharedFile>? list;
+
   @override
   void initState() {
     super.initState();
@@ -40,16 +43,21 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         list = value;
       });
-      print("Shared: getMediaStream ${value.map((f) => f.value).join(",")}");
+      debugPrint(
+        "Shared: getMediaStream ${value.map((f) => f.value).join(",")}",
+      );
     }, onError: (err) {
-      print("getIntentDataStream error: $err");
+      debugPrint(
+        "getIntentDataStream error: $err",
+      );
     });
 
     // For sharing images coming from outside the app while the app is closed
     FlutterSharingIntent.instance
         .getInitialSharing()
         .then((List<SharedFile> value) {
-      print("Shared: getInitialMedia ${value.map((f) => f.value).join(",")}");
+      debugPrint(
+          "Shared: getInitialMedia ${value.map((f) => f.value).join(",")}");
       setState(() {
         list = value;
       });
@@ -65,6 +73,12 @@ class _MyAppState extends State<MyApp> {
       ),
       home: const Home(),
     );
+  }
+
+  @override
+  void dispose() {
+    _intentDataStreamSubscription.cancel();
+    super.dispose();
   }
 }
 
