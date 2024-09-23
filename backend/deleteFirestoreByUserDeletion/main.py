@@ -1,7 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
-
 # # local environment
 # cred = credentials.Certificate("service-account-for-fibase-admin.json")
 
@@ -11,7 +10,6 @@ from firebase_admin import firestore
 # google cloud environment
 app = firebase_admin.initialize_app()
 db = firestore.client()
-
 
 # Function triggered by deletion of user
 def delete_firestore_by_user_deletion(data, context):
@@ -56,6 +54,5 @@ def delete_user(user_ref):
     user_ref.delete()
 
 if __name__ == "__main__":
-    data = {"uid": "Ort5FYo1jtWvOAjVem2CizbeNyI3"}
     context = None
-    delete_firestore_by_user_deletion(data, context)
+    # delete_firestore_by_user_deletion(data, context)

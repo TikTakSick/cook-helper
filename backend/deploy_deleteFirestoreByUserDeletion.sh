@@ -3,6 +3,6 @@ gcloud functions deploy deleteFirestoreByUserDeletion \
     --entry-point delete_firestore_by_user_deletion \
     --trigger-event providers/firebase.auth/eventTypes/user.delete \
     --region asia-northeast1 \
-    --source .\
+    --source deleteFirestoreByUserDeletion/ \
     --runtime python312
 

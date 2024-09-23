@@ -1,0 +1,8 @@
+.gcloudignore
+.gitignore
+venv
+*.sh
+*.json
+http_triggers/*.env
+.env.yaml
+__pycache___

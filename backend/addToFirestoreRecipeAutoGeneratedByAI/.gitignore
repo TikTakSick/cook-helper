@@ -1,5 +1,3 @@
 # .gcloudignore
-venv/
-.env.yaml
-*.json
+.env
 __pycache__
