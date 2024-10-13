@@ -9,10 +9,10 @@ import '../../views/pages/recipe_detail_page.dart';
 class MyPageController {
   // レシピが押された時の動作
   navigatorToRecipeDetailPage(
-      {required context, required recipe, required uid}) async {
+      {required context, required recipe, required user}) async {
     await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       // return WebViewContainer(url: "https://flutter.dev");
-      return RecipeDetailPage(recipe: recipe, uid: uid);
+      return RecipeDetailPage(recipe: recipe, user: user);
     }));
   }
 

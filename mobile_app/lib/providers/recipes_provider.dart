@@ -4,6 +4,6 @@ import './auth_provider.dart';
 
 final recipesProvider = StreamProvider.family.autoDispose((ref, String? uid) {
   final authUser = ref.watch(authUserProvider);
-  final RecipeService recipeService = RecipeService(uid: authUser?.uid);
+  final RecipeService recipeService = RecipeService(user: authUser);
   return recipeService.streamRecipesFromFirestore();
 });

@@ -169,7 +169,7 @@ class MyPage extends ConsumerWidget {
                         onTap: () {
                           //レシピ詳細画面に遷移する．
                           myPageController.navigatorToRecipeDetailPage(
-                              context: context, recipe: recipe, uid: uid);
+                              context: context, recipe: recipe, user: user);
                         },
                       ),
                     ]);
