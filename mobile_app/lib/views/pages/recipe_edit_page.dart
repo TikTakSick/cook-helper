@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -115,9 +114,9 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
   }
 
   // Firestoreにレシピを追加する．
-  bool _addRecipeToFirestore({required uid}) {
+  Future<bool> _updateRecipeToFirestore() async {
     RecipeController recipeController = RecipeController(user: widget.user);
-    bool result = recipeController.updateToFirestore(
+    bool result = await recipeController.updateToFirestore(
       recipeId: _recipeId,
       dishName: _dishNameController.text,
       recipeType: _recipeTypeController,
@@ -266,19 +265,22 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
                                 });
                                 // レシピ編集
                                 bool addRecipeToFirestoreResult =
-                                    _addRecipeToFirestore(uid: widget.user.uid);
+                                    await _updateRecipeToFirestore();
 
-                                // ユーザ名変更捜査の結果を表示する．
-                                if (addRecipeToFirestoreResult) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('レシピを編集しました')));
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('レシピ編集に失敗しました')));
+                                // レシピ編集結果を表示する．
+                                if (context.mounted) {
+                                  // レシピ編集に成功した場合
+                                  if (addRecipeToFirestoreResult) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text('レシピを編集しました')));
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text('レシピ編集に失敗しました')));
+                                  }
                                 }
                               }
                             },

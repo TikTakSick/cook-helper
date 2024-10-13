@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:community_material_icon/community_material_icon.dart';
 import 'package:gap/gap.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hugeicons/hugeicons.dart';
 // utils
 import '../utils/page_title.dart';
@@ -19,10 +20,10 @@ import '../../models/recipe_model.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
-  final String uid;
+  final User user;
 
   // コンストラクタ
-  const RecipeDetailPage({super.key, required this.recipe, required this.uid});
+  const RecipeDetailPage({super.key, required this.recipe, required this.user});
 
   @override
   State<RecipeDetailPage> createState() => _RecipeDetailPageState();
@@ -37,7 +38,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     super.initState();
     recipePageController = RecipeDetailPageController(
       recipe: widget.recipe,
-      uid: widget.uid,
+      user: widget.user,
     );
   }
 
@@ -64,8 +65,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     child:
                         const Text('サイトページを表示', style: elevatedButtonTextStyle),
                     onPressed: () {
-                      recipePageController.navigatorToRecipeSitePage(
-                          context: context);
+                      if (!context.mounted) {
+                        return;
+                      } else {
+                        recipePageController.navigatorToRecipeSitePage(
+                            context: context);
+                      }
                     },
                   )
                 },
@@ -91,7 +96,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     setState(() {
                       recipeDeleteButtonPushed = true;
                     });
-                    bool result = RecipeController(uid: widget.uid)
+                    bool result = RecipeController(user: widget.user)
                         .deleteFromFirestore(
                             recipeId: widget.recipe.recipeId ?? "");
                     if (!context.mounted) {

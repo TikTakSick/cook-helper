@@ -20,7 +20,6 @@ import '../../controllers/recipe_controller.dart';
 import '../../providers/auth_provider.dart';
 
 class RecipeAddPage extends ConsumerStatefulWidget {
-  // UserProviderを呼び出す．
   const RecipeAddPage({super.key});
   final String titleName = "レシピ追加";
 
@@ -130,9 +129,9 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
   }
 
   // Firestoreにレシピを追加する．
-  bool _addRecipeToFirestore({required uid}) {
-    RecipeController recipeController = RecipeController(uid: uid);
-    bool result = recipeController.addToFirestore(
+  Future<bool> _addRecipeToFirestore({required user}) async {
+    RecipeController recipeController = RecipeController(user: user);
+    bool result = await recipeController.addToFirestore(
       dishName: dishNameController.text,
       recipeType: recipeTypeController.text,
       ingredients: ingredientsController.text,
@@ -146,10 +145,8 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
   // 画面部分
   @override
   Widget build(BuildContext context) {
-    // userIDを取得する．
+    // userを取得する．
     final User? user = ref.watch(authUserProvider);
-    final String? uid = user?.uid;
-    // ここにfirestoreのproviderを用意する．
 
     return Scaffold(
         backgroundColor: CommonColors.pageBackgroundColor,
@@ -322,18 +319,22 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
                                 });
                                 // レシピ追加
                                 bool addRecipeToFirestoreResult =
-                                    _addRecipeToFirestore(uid: uid);
+                                    await _addRecipeToFirestore(user: user);
+                                debugPrint(
+                                    "addRecipeToFirestoreResult: $addRecipeToFirestoreResult");
 
                                 // 追加結果のダイアログ表示
                                 await Future.delayed(const Duration(seconds: 1),
                                     () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AddRecipeToFirestoreResultDialog(
-                                            addRecipeToFirestoreResult:
-                                                addRecipeToFirestoreResult);
-                                      });
+                                  if (context.mounted) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AddRecipeToFirestoreResultDialog(
+                                              addRecipeToFirestoreResult:
+                                                  addRecipeToFirestoreResult);
+                                        });
+                                  }
                                 });
 
                                 // 追加成功した場合，入力全てリセットする
