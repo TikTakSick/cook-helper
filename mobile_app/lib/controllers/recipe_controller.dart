@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 // services
 import '../services/recipe_service.dart';
 
 // RecipeController
 class RecipeController {
-  final String uid;
   final RecipeService recipeService;
   final bool success = true;
 
-  // コンストラクタ
-  RecipeController({required this.uid})
-      : recipeService = RecipeService(uid: uid);
+  RecipeController({required User? user})
+      : recipeService = RecipeService(user: user);
 
   // レシピ追加
-  bool addToFirestore({
+  Future<bool> addToFirestore({
     required String dishName,
     required String recipeType,
     required String ingredients,
     required String instructions,
     required String url,
-  }) {
+  }) async {
     // データベース追加
     try {
-      recipeService.addToFirestore(
+      await recipeService.addToFirestore(
         dishName: dishName,
         recipeType: recipeType,
         ingredients: ingredients,
