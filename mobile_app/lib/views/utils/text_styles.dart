@@ -30,4 +30,4 @@ const TextStyle bottomNavigationBarItemLabelTextStyle =
 
 // RadioListTile TextStyle
 const TextStyle radioListTileTextStyle =
-    TextStyle(fontSize: 23, color: CommonColors.textColor);
+    TextStyle(fontSize: 20, color: CommonColors.textColor);
