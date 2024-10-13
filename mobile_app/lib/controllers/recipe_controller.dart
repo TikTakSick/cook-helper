@@ -36,17 +36,17 @@ class RecipeController {
   }
 
   // レシピ内容編集
-  bool updateToFirestore({
+  Future<bool> updateToFirestore({
     required String recipeId,
     required String dishName,
     required String recipeType,
     required String ingredients,
     required String instructions,
     required String url,
-  }) {
+  }) async {
     // データベース内容更新．
     try {
-      recipeService.updateToFirestore(
+      await recipeService.updateToFirestore(
         recipeId: recipeId,
         dishName: dishName,
         recipeType: recipeType,
