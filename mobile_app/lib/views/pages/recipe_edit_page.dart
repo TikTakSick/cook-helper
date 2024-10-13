@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // //utils
 import '../utils/page_title.dart';
@@ -16,9 +17,9 @@ import '../../models/recipe_model.dart';
 import '../../controllers/recipe_controller.dart';
 
 class RecipeEditPage extends StatefulWidget {
-  const RecipeEditPage({super.key, required this.recipe, required this.uid});
+  const RecipeEditPage({super.key, required this.recipe, required this.user});
   final Recipe recipe;
-  final String uid;
+  final User user;
   final String titleName = "レシピ編集";
 
   @override
@@ -115,7 +116,7 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
 
   // Firestoreにレシピを追加する．
   bool _addRecipeToFirestore({required uid}) {
-    RecipeController recipeController = RecipeController(uid: uid);
+    RecipeController recipeController = RecipeController(user: widget.user);
     bool result = recipeController.updateToFirestore(
       recipeId: _recipeId,
       dishName: _dishNameController.text,
@@ -265,7 +266,7 @@ class _RecipeEditPageState extends State<RecipeEditPage> {
                                 });
                                 // レシピ編集
                                 bool addRecipeToFirestoreResult =
-                                    _addRecipeToFirestore(uid: widget.uid);
+                                    _addRecipeToFirestore(uid: widget.user.uid);
 
                                 // ユーザ名変更捜査の結果を表示する．
                                 if (addRecipeToFirestoreResult) {
