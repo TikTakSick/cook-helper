@@ -25,23 +25,23 @@ class LoginPageState extends State<LoginPage> {
   String _password = '';
   String? message = '';
   String infoMessage = '';
-  bool isError = false;
+  bool hasError = false;
 
   final String titleName = "Cook Helper Login Page";
 
-  void setInfoMessage(message) {
+  void _setInfoMessage(message) {
     setState(() {
       infoMessage = message;
     });
   }
 
-  void setIsError({boolean = true}) {
+  void _setHasError({boolean = true}) {
     setState(() {
-      isError = boolean;
+      hasError = boolean;
     });
   }
 
-  void moveToMyPage({required BuildContext context}) {
+  void _navigateToMyPage({required BuildContext context}) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
       return const MyPage();
     }));
@@ -72,7 +72,7 @@ class LoginPageState extends State<LoginPage> {
                             color: CommonColors.primaryColor,
                             border: Border.all(width: 0)),
                     child: Text(
-                        isError ? "エラーが発生しました:\n $infoMessage" : infoMessage,
+                        hasError ? "エラーが発生しました:\n $infoMessage" : infoMessage,
                         style: const TextStyle(color: Colors.black)),
                   ),
                   const Gap(30),
@@ -105,20 +105,11 @@ class LoginPageState extends State<LoginPage> {
                       // サインアップ・ユーザ登録
                       final response = await authController.signUp(
                           email: _email, password: _password);
-                      if (response["isSuccess"]) {
-                        // サインアップに成功したので，ホーム画面に遷移する．
-                        if (!context.mounted) {
-                          return;
-                        }
-                        moveToMyPage(context: context);
-                      }
-                      // サインアップ失敗時の操作
-                      else {
-                        setState(() {
-                          setIsError(boolean: true);
-                          setInfoMessage(response["errorMessage"]);
-                        });
-                      }
+                      setState(() {
+                        _setHasError(
+                            boolean: response["isSuccess"] ? false : true);
+                        _setInfoMessage(response["message"]);
+                      });
                     },
                   ),
                   // ログインボタン
@@ -138,13 +129,12 @@ class LoginPageState extends State<LoginPage> {
                         if (response["isSuccess"]) {
                           // ログインに成功したので，ホーム画面に遷移する．
                           debugPrint("ユーザ認証に成功しました");
-                          moveToMyPage(context: context);
-                        }
-                        // ログイン失敗時の操作
-                        else {
+                          _navigateToMyPage(context: context);
+                        } else {
+                          // ログイン失敗時の操作
                           setState(() {
-                            setIsError(boolean: true);
-                            setInfoMessage(response["errorMessage"]);
+                            _setHasError(boolean: true);
+                            _setInfoMessage(response["message"]);
                           });
                         }
                       }),
@@ -156,17 +146,30 @@ class LoginPageState extends State<LoginPage> {
                       onPressed: () async {
                         final response = await authController
                             .sendPasswordResetEmail(email: _email);
-                        if (response["isSuccess"]) {
-                          message = "パスワードリセット用のメールを送信しました";
-                          setState(() {
-                            setIsError(boolean: false);
-                          });
-                        } else {
-                          message = response["errorMessage"];
-                          setIsError(boolean: true);
-                        }
-                        setInfoMessage(message);
-                      })
+                        setState(() {
+                          _setHasError(
+                              boolean: response["isSuccess"] ? false : true);
+                          _setInfoMessage(response["message"]);
+                        });
+                      }),
+                  // メール検証メール送信ボタン
+                  ElevatedButton(
+                    style: AuthButton.style,
+                    child: const Text('メール検証メール送信',
+                        style: elevatedButtonTextStyle),
+                    onPressed: () async {
+                      final response =
+                          await authController.sendEmailVerification(
+                        email: _email,
+                        password: _password,
+                      );
+                      setState(() {
+                        _setHasError(
+                            boolean: response["isSuccess"] ? false : true);
+                        _setInfoMessage(response["message"]);
+                      });
+                    },
+                  ),
                 ])),
       ),
     );
