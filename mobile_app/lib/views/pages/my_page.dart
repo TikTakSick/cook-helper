@@ -205,8 +205,17 @@ class MyPage extends ConsumerWidget {
         items: bottomNavigationBarItemList,
         // タップされたボタンに応じて，画面遷移する．
         onTap: (index) {
-          myPageController.navigatorByBottomNavigationBarItem(
-              context: context, index: index);
+          if (index == randomRecipePageValue) {
+            myPageController.navigatorByBottomNavigationBarItem(
+              context: context,
+              index: index,
+              recipes: recipes,
+              user: user,
+            );
+          } else {
+            myPageController.navigatorByBottomNavigationBarItem(
+                context: context, index: index);
+          }
         },
       ),
     );

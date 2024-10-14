@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 // pages
 import '../../views/pages/my_page.dart';
@@ -6,7 +7,16 @@ import '../../views/pages/setting_page.dart';
 import '../../views/pages/recipe_add_page.dart';
 import '../../views/pages/recipe_detail_page.dart';
 
+// models
+import '../../models/recipe_model.dart';
+
 class MyPageController {
+  //
+  _getRecipeRandomlyFromRecipeList({required List<Recipe> recipeList}) {
+    final int randomIndex = Random().nextInt(recipeList.length);
+    return recipeList[randomIndex];
+  }
+
   // レシピが押された時の動作
   navigatorToRecipeDetailPage(
       {required context, required recipe, required user}) async {
@@ -17,16 +27,30 @@ class MyPageController {
   }
 
   // ホーム画面の下位ボタンが押された時の動作．
-  navigatorByBottomNavigationBarItem({required context, required index}) async {
+  navigatorByBottomNavigationBarItem(
+      {required context, required index, recipes, user}) async {
     switch (index) {
       // レシピ追加ページに移る．
       case recipeAddPageValue:
         await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
           return const RecipeAddPage();
         }));
-      // ホームページ更新
+      // ランダムにレシピを選び，レシピ詳細ページに移る．
       case randomRecipePageValue:
-        null;
+        // レシピリストを取得
+        final List<Recipe> recipeList = recipes.value;
+        if (recipeList.isEmpty) {
+          debugPrint("レシピがありません．");
+          return;
+        }
+        final Recipe recipe = _getRecipeRandomlyFromRecipeList(
+          recipeList: recipeList,
+        );
+        navigatorToRecipeDetailPage(
+          context: context,
+          recipe: recipe,
+          user: user,
+        );
       // 設定ページに移る.
       case settingPageValue:
         await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
