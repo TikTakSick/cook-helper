@@ -5,53 +5,119 @@ import '../services/auth_service.dart';
 
 // AuthController
 class AuthController {
-  final AuthService _authService = AuthService();
+  final AuthService _authService;
 
   // コンストラクタ
-  AuthController();
+  AuthController() : _authService = AuthService();
 
   // メソッドの返り値設定．デフォルトでは，成功とする．
-  Map<String, dynamic> response(
-      {bool isSuccess = true, String? errrorMessage}) {
+  Map<String, dynamic> _authResponse({bool isSuccess = true, String? message}) {
     return {
       "isSuccess": isSuccess,
-      "errorMessage": errrorMessage,
+      "message": message,
     };
   }
 
   // ログイン
-  Future<Map> login({email, password}) async {
+  Future<Map> login({
+    required email,
+    required password,
+  }) async {
+    late final String loginErrorMessage;
+
+    // ログイン成功時の処理
     try {
       final User? user =
           await _authService.login(email: email, password: password);
-      if (user != null) {
-        // ログイン成功時の操作
-        debugPrint("ログインしました:\n ${user.email} , ${user.uid}");
-        return response();
+      if (user == null) {
+        // ユーザがnullの場合，失敗とする．
+        return _authResponse(isSuccess: false);
+      } else if (user.emailVerified == false) {
+        // verifyEmailModeでメールアドレスが検証されていない場合も失敗とする．
+        loginErrorMessage = "メールアドレスが検証されていません";
+        debugPrint(loginErrorMessage);
+        return _authResponse(isSuccess: false, message: loginErrorMessage);
       }
+      debugPrint("ログインしました:\n ${user.email} , ${user.uid}");
+      return _authResponse();
       // ログイン失敗時の操作
-      return response(isSuccess: false);
-    } on FirebaseAuthException catch (error) {
-      return response(
-        isSuccess: false,
-        errrorMessage: error.message.toString(),
-      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        loginErrorMessage = "ユーザが見つかりません";
+        debugPrint(loginErrorMessage);
+      } else if (e.code == 'wrong-password') {
+        loginErrorMessage = "パスワードが違います";
+        debugPrint(loginErrorMessage);
+      }
+      return _authResponse(isSuccess: false, message: loginErrorMessage);
+    } catch (e) {
+      return _authResponse(isSuccess: false, message: e.toString());
     }
   }
 
   // サインアップ（ユーザ登録）
   Future<Map> signUp({required email, required password}) async {
+    late final String signUpMessage;
+    // サインアップ成功時の処理
     try {
       User? user = await _authService.signUp(email: email, password: password);
-      if (user != null) {
-        debugPrint("ユーザ登録しました:\n ${user.displayName},${user.uid}");
-        // ユーザ登録に成功したので，ホーム画面に遷移する．
-        return response();
+      // ユーザがnullの場合，失敗とする．
+      if (user == null) {
+        return _authResponse(isSuccess: false);
       }
-      return response(isSuccess: false);
-    } on FirebaseAuthException catch (error) {
-      return response(
-          isSuccess: false, errrorMessage: error.message.toString());
+      // ユーザ登録成功後，確認メールを送信する．
+      debugPrint("ユーザ登録しました:\n ${user.displayName},${user.uid}");
+      await _authService.sendEmailVerification(user: user);
+      signUpMessage = "メールアドレス確認メールを送信しました";
+      return _authResponse(isSuccess: true, message: signUpMessage);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "weak-password") {
+        signUpMessage = "パスワードが弱いです";
+        debugPrint(signUpMessage);
+      } else if (e.code == "email-already-in-use") {
+        signUpMessage = "このメールアドレスは既に使われています";
+        debugPrint(signUpMessage);
+      }
+      return _authResponse(isSuccess: false, message: signUpMessage);
+    } catch (e) {
+      return _authResponse(isSuccess: false, message: e.toString());
+    }
+  }
+
+  Future<Map> sendEmailVerification({required email, required password}) async {
+    late final String message;
+    // ログイン処理機能を利用してユーザを取得し，メールアドレス確認メールを送信する．
+    try {
+      // ユーザを取得
+      final User? user =
+          await _authService.login(email: email, password: password);
+      // ユーザがnullの場合，失敗とする．
+      if (user == null) {
+        return _authResponse(isSuccess: false);
+      }
+      // メールがすでに検証されている場合
+      else if (user.emailVerified == true) {
+        message = "対象のメールアドレスは，検証済みです";
+        debugPrint(message);
+        return _authResponse(isSuccess: true, message: message);
+      }
+      // メールアドレス確認メールを送信する．
+      await _authService.sendEmailVerification(user: user);
+      message = "メールアドレス確認メールを送信しました";
+      return _authResponse(isSuccess: true, message: message);
+
+      // ログイン失敗時の操作
+    } on FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        message = "ユーザが見つかりません";
+        debugPrint(message);
+      } else if (e.code == 'wrong-password') {
+        message = "パスワードが違います";
+        debugPrint(message);
+      }
+      return _authResponse(isSuccess: false, message: message);
+    } catch (e) {
+      return _authResponse(isSuccess: false, message: e.toString());
     }
   }
 
@@ -59,11 +125,10 @@ class AuthController {
   Future<Map> sendPasswordResetEmail({required email}) async {
     try {
       await _authService.sendPasswordResetEmail(email: email);
-      return response();
+      return _authResponse(message: "パスワードリセット用のメールを送信しました");
     } on FirebaseAuthException catch (error) {
       debugPrint(error.message.toString());
-      return response(
-          isSuccess: false, errrorMessage: error.message.toString());
+      return _authResponse(isSuccess: false, message: error.message.toString());
     }
   }
 
@@ -71,12 +136,12 @@ class AuthController {
   Future<Map> logOut() async {
     try {
       await _authService.logOut();
-      return response();
+      return _authResponse();
     } on FirebaseAuthException catch (error) {
       debugPrint("$error");
-      return response(
+      return _authResponse(
         isSuccess: false,
-        errrorMessage: error.message.toString(),
+        message: error.message.toString(),
       );
     }
   }
@@ -85,12 +150,12 @@ class AuthController {
   Future<Map> updateDisplayName({required String userName}) async {
     try {
       await _authService.updateDisplayName(userName: userName);
-      return response();
+      return _authResponse();
     } on FirebaseAuthException catch (error) {
       debugPrint("$error");
-      return response(
+      return _authResponse(
         isSuccess: false,
-        errrorMessage: error.message.toString(),
+        message: error.message.toString(),
       );
     }
   }
@@ -99,12 +164,12 @@ class AuthController {
   Future<Map> delete() async {
     try {
       await _authService.delete();
-      return response();
+      return _authResponse();
     } on FirebaseAuthException catch (error) {
       debugPrint("$error");
-      return response(
+      return _authResponse(
         isSuccess: false,
-        errrorMessage: error.message.toString(),
+        message: error.message.toString(),
       );
     }
   }
