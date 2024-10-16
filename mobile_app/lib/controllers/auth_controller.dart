@@ -23,7 +23,7 @@ class AuthController {
     required email,
     required password,
   }) async {
-    late final String loginErrorMessage;
+    String loginErrorMessage = "";
 
     // ログイン成功時の処理
     try {
@@ -57,7 +57,7 @@ class AuthController {
 
   // サインアップ（ユーザ登録）
   Future<Map> signUp({required email, required password}) async {
-    late final String signUpMessage;
+    String signUpMessage = "";
     // サインアップ成功時の処理
     try {
       User? user = await _authService.signUp(email: email, password: password);
@@ -85,7 +85,7 @@ class AuthController {
   }
 
   Future<Map> sendEmailVerification({required email, required password}) async {
-    late final String message;
+    String message = "";
     // ログイン処理機能を利用してユーザを取得し，メールアドレス確認メールを送信する．
     try {
       // ユーザを取得
