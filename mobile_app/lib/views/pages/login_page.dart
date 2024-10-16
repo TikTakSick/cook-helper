@@ -105,6 +105,9 @@ class LoginPageState extends State<LoginPage> {
                       // サインアップ・ユーザ登録
                       final response = await authController.signUp(
                           email: _email, password: _password);
+                      if (!context.mounted) {
+                        return;
+                      }
                       setState(() {
                         _setHasError(
                             boolean: response["isSuccess"] ? false : true);
