@@ -42,11 +42,11 @@ class AuthController {
       return _authResponse();
       // ログイン失敗時の操作
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
+      if (e.code == "invalid-credential") {
         loginErrorMessage = "ユーザが見つかりません";
         debugPrint(loginErrorMessage);
       } else if (e.code == 'wrong-password') {
-        loginErrorMessage = "パスワードが違います";
+        loginErrorMessage = "パスワードが無効であるか、パスワードが設定されていません。";
         debugPrint(loginErrorMessage);
       }
       return _authResponse(isSuccess: false, message: loginErrorMessage);
@@ -72,7 +72,7 @@ class AuthController {
       return _authResponse(isSuccess: true, message: signUpMessage);
     } on FirebaseAuthException catch (e) {
       if (e.code == "weak-password") {
-        signUpMessage = "パスワードが弱いです";
+        signUpMessage = "パスワードが弱いです．6文字以上にしてください．";
         debugPrint(signUpMessage);
       } else if (e.code == "email-already-in-use") {
         signUpMessage = "このメールアドレスは既に使われています";
