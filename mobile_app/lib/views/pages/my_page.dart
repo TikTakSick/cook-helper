@@ -39,9 +39,10 @@ const Map<int, BottomNavigationBarItem> bottomNavigationBarItemMap = {
 
 // マイページ画面用Widget
 class MyPage extends ConsumerWidget {
-  const MyPage({super.key});
+  const MyPage({super.key, this.sharedWebRecipeUrl});
 
   final String titleName = "マイページ";
+  final String? sharedWebRecipeUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

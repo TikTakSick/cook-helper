@@ -111,7 +111,7 @@ class Home extends ConsumerWidget {
     final authState = ref.watch(authUserChangesProvider);
     return authState.when(
       data: (user) => (user != null && user.emailVerified)
-          ? const MyPage()
+          ? MyPage(sharedWebRecipeUrl: sharedWebRecipeUrl)
           : const LoginPage(),
       loading: () => const CircularProgressIndicator(),
       error: (err, stack) => Text("Error: $err"),
