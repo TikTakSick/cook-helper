@@ -79,27 +79,29 @@ class MyPage extends ConsumerWidget {
         ),
         actions: <Widget>[
           IconButton(
-              icon: const Icon(
-                Icons.logout,
-                color: CommonColors.subprimaryColor,
-                size: 40,
-              ),
-              // ログアウトする．
-              onPressed: () async {
-                final response = await authController.logOut();
-                if (response["isSuccess"]) {
-                  if (!context.mounted) return;
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return const LoginPage();
-                      },
-                    ),
-                  );
-                }
-                ;
-              })
+            icon: const Icon(
+              Icons.logout,
+              color: CommonColors.subprimaryColor,
+              size: 40,
+            ),
+            // ログアウトする．
+            onPressed: () async {
+              final response = await authController.logOut();
+              if (!response["isSuccess"]) {
+                return;
+              } else if (!context.mounted) {
+                return;
+              }
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const LoginPage();
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
