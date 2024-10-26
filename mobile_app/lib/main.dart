@@ -10,7 +10,6 @@ import 'package:flutter_sharing_intent/model/sharing_file.dart';
 // views
 import 'views/pages/my_page.dart';
 import 'views/pages/login_page.dart';
-import 'views/utils/colors.dart';
 
 // providers
 import 'providers/auth_provider.dart';
@@ -24,6 +23,7 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+// MyApp
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
@@ -33,47 +33,59 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late StreamSubscription _intentDataStreamSubscription;
-  List<SharedFile>? list;
+  String? sharedWebRecipeUrl;
+
+  bool _isUrlSharedMediaType({required SharedFile? sharedFile}) {
+    return sharedFile?.type == SharedMediaType.URL;
+  }
+
+  bool _isUrlValuePresent({required SharedFile? sharedFile}) {
+    return sharedFile?.value != null;
+  }
+
+  bool _isUrlValid({required SharedFile? sharedFile}) {
+    return _isUrlSharedMediaType(sharedFile: sharedFile) &&
+        _isUrlValuePresent(sharedFile: sharedFile);
+  }
+
+  void _setSharedWebRecipeUrl({required List<SharedFile> sharedFileList}) {
+    setState(() {
+      if (_isUrlValid(sharedFile: sharedFileList[0])) {
+        sharedWebRecipeUrl = sharedFileList[0].value;
+        debugPrint("Shared: setSharedWebRecipeUrl $sharedWebRecipeUrl");
+      }
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // For sharing images coming from outside the app while the app is in the memory
+    // For sharing data coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = FlutterSharingIntent.instance
         .getMediaStream()
-        .listen((List<SharedFile> value) {
-      setState(() {
-        list = value;
-      });
-      debugPrint(
-        "Shared: getMediaStream ${value.map((f) => f.value).join(",")}",
-      );
+        .listen((List<SharedFile> sharedFileList) {
+      // set sharedWebRecipeUrl if an element of sharedFileList is a URL
+      _setSharedWebRecipeUrl(sharedFileList: sharedFileList);
     }, onError: (err) {
-      debugPrint(
-        "getIntentDataStream error: $err",
-      );
+      debugPrint("getIntentDataStream error: $err");
     });
 
-    // For sharing images coming from outside the app while the app is closed
-    FlutterSharingIntent.instance
-        .getInitialSharing()
-        .then((List<SharedFile> value) {
-      debugPrint(
-          "Shared: getInitialMedia ${value.map((f) => f.value).join(",")}");
-      setState(() {
-        list = value;
-      });
+    // For sharing data coming from outside the app while the app is closed
+    FlutterSharingIntent.instance.getInitialSharing().then(
+        (List<SharedFile> sharedFileList) {
+      // set sharedWebRecipeUrl if an element of sharedFileList is a URL
+      _setSharedWebRecipeUrl(sharedFileList: sharedFileList);
+    }, onError: (err) {
+      debugPrint("getInitialSharing error: $err");
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cook Helper',
-      theme: ThemeData(
-        primarySwatch: CommonColors.primaryColor,
+      home: Home(
+        sharedWebRecipeUrl: sharedWebRecipeUrl,
       ),
-      home: const Home(),
     );
   }
 
@@ -84,8 +96,14 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
+// Home
 class Home extends ConsumerWidget {
-  const Home({super.key});
+  final String? sharedWebRecipeUrl;
+
+  const Home({
+    super.key,
+    this.sharedWebRecipeUrl,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
