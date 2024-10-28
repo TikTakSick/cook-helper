@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 // controllers
 import "../../controllers/auth_controller.dart";
-
-// views
-import 'my_page.dart';
 
 // utils
 import '../utils/page_title.dart';
@@ -23,28 +21,25 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   String _email = '';
   String _password = '';
-  String? message = '';
   String infoMessage = '';
   bool hasError = false;
 
-  final String titleName = "Cook Helper Login Page";
+  final String titleName = "ログインページ";
 
-  void _setInfoMessage(message) {
+  void _showMessage(String message) {
     setState(() {
       infoMessage = message;
     });
+    final String snackBarMessage =
+        hasError ? "エラーが発生しました:\n $infoMessage" : infoMessage;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(snackBarMessage)));
   }
 
   void _setHasError({boolean = true}) {
     setState(() {
       hasError = boolean;
     });
-  }
-
-  void _navigateToMyPage({required BuildContext context}) {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
-      return const MyPage();
-    }));
   }
 
   @override
@@ -63,18 +58,6 @@ class LoginPageState extends State<LoginPage> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // エラーメッセージ表示
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: infoMessage == ""
-                        ? null
-                        : BoxDecoration(
-                            color: CommonColors.primaryColor,
-                            border: Border.all(width: 0)),
-                    child: Text(
-                        hasError ? "エラーが発生しました:\n $infoMessage" : infoMessage,
-                        style: const TextStyle(color: Colors.black)),
-                  ),
                   const Gap(30),
                   // メールアドレス入力欄
                   TextFormField(
@@ -105,14 +88,12 @@ class LoginPageState extends State<LoginPage> {
                       // サインアップ・ユーザ登録
                       final response = await authController.signUp(
                           email: _email, password: _password);
-                      if (!context.mounted) {
-                        return;
-                      }
+                      if (!context.mounted) return;
                       setState(() {
                         _setHasError(
                             boolean: response["isSuccess"] ? false : true);
-                        _setInfoMessage(response["message"]);
                       });
+                      _showMessage(response["message"]);
                     },
                   ),
                   // ログインボタン
@@ -126,19 +107,17 @@ class LoginPageState extends State<LoginPage> {
                           email: _email,
                           password: _password,
                         );
-                        if (!context.mounted) {
-                          return;
-                        }
                         if (response["isSuccess"]) {
-                          // ログインに成功したので，ホーム画面に遷移する．
                           debugPrint("ユーザ認証に成功しました");
-                          _navigateToMyPage(context: context);
+                          // ログインに成功したので，ホーム画面に遷移する．
+                          if (!context.mounted) return;
+                          context.push('/my-page');
                         } else {
                           // ログイン失敗時の操作
                           setState(() {
                             _setHasError(boolean: true);
-                            _setInfoMessage(response["message"]);
                           });
+                          _showMessage(response["message"]);
                         }
                       }),
                   // パスワードリセットボタン
@@ -152,8 +131,8 @@ class LoginPageState extends State<LoginPage> {
                         setState(() {
                           _setHasError(
                               boolean: response["isSuccess"] ? false : true);
-                          _setInfoMessage(response["message"]);
                         });
+                        _showMessage(response["message"]);
                       }),
                   // メール検証メール送信ボタン
                   ElevatedButton(
@@ -166,11 +145,15 @@ class LoginPageState extends State<LoginPage> {
                         email: _email,
                         password: _password,
                       );
+                      if (!context.mounted) {
+                        return;
+                      }
+                      debugPrint("メール検証メール送信ボタンが押されました: $response");
                       setState(() {
                         _setHasError(
                             boolean: response["isSuccess"] ? false : true);
-                        _setInfoMessage(response["message"]);
                       });
+                      _showMessage(response["message"]);
                     },
                   ),
                 ])),

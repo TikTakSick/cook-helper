@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 // views_utils
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import '../utils/text_styles.dart';
 import "../utils/button_styles.dart";
-
-// pages
-import 'login_page.dart';
 
 // controllers
 import "../../controllers/pages/setting_page_controller.dart";
@@ -68,10 +66,7 @@ class _SettingPageState extends State<SettingPage> {
                   });
                   authController.logOut();
                   if (mounted) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const LoginPage();
-                    }));
+                    context.go('/login-page');
                   }
                 },
               ),
@@ -90,10 +85,7 @@ class _SettingPageState extends State<SettingPage> {
                   final response = await authController.delete();
                   if (response["isSuccess"]) {
                     if (!context.mounted) return;
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) {
-                      return const LoginPage();
-                    }));
+                    context.go('/login-page');
                   }
                   debugPrint(response["errorMessage"]);
                 },

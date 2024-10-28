@@ -3,14 +3,12 @@ import 'package:community_material_icon/community_material_icon.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 // utils
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import '../utils/text_styles.dart';
-
-// pagaes
-import 'login_page.dart';
 
 // controllers
 import '../../controllers/pages/my_page_controller.dart';
@@ -23,26 +21,11 @@ import '../../models/recipe_model.dart';
 import "../../providers/recipes_provider.dart";
 import '../../providers/auth_provider.dart';
 
-// BottomeNavigationBarItemの設定
-const recipeAddPageValue = 0;
-const randomRecipePageValue = 1;
-const settingPageValue = 2;
-
-const Map<int, BottomNavigationBarItem> bottomNavigationBarItemMap = {
-  recipeAddPageValue:
-      BottomNavigationBarItem(label: "レシピ追加", icon: Icon(Icons.add)),
-  randomRecipePageValue: BottomNavigationBarItem(
-      label: "おまかせ", icon: Icon(CommunityMaterialIcons.chef_hat)),
-  settingPageValue:
-      BottomNavigationBarItem(label: "設定", icon: Icon(Icons.settings)),
-};
-
 // マイページ画面用Widget
 class MyPage extends ConsumerWidget {
-  const MyPage({super.key, this.sharedWebRecipeUrl});
+  const MyPage({super.key});
 
   final String titleName = "マイページ";
-  final String? sharedWebRecipeUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -53,10 +36,6 @@ class MyPage extends ConsumerWidget {
 
     // 登録レシピ情報取得
     final recipes = ref.watch(recipesProvider(uid));
-
-    // BottomNavigationBarItemのリスト
-    List<BottomNavigationBarItem> bottomNavigationBarItemList =
-        bottomNavigationBarItemMap.values.toList();
 
     // myPageController
     final myPageController = MyPageController();
@@ -93,14 +72,7 @@ class MyPage extends ConsumerWidget {
               } else if (!context.mounted) {
                 return;
               }
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return const LoginPage();
-                  },
-                ),
-              );
+              context.go('/login-page');
             },
           ),
         ],
@@ -111,38 +83,69 @@ class MyPage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(children: [
-                  Text(
-                      overflow: TextOverflow.ellipsis,
-                      "ユーザ名：$currentUserName "),
-                  const Text("--上部ボタンの説明--"),
-                  const Gap(3),
-                  const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          Icons.food_bank,
-                        ),
-                        Text("：マイページ更新")
-                      ]),
-                  const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(
-                          Icons.logout,
-                        ),
-                        Text("：      ログアウト")
-                      ]),
-                  const Gap(3),
-                  const Text("---------------------"),
-                ])
+                Row(
+                  children: [
+                    const Gap(20),
+                    Text(
+                        overflow: TextOverflow.ellipsis,
+                        "ユーザ名：$currentUserName ",
+                        style: myPageTextStyle),
+                  ],
+                ),
+                const Gap(3),
+                const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Gap(20),
+                      Icon(
+                        size: 30,
+                        Icons.food_bank,
+                      ),
+                      Text("：マイページ更新", style: myPageTextStyle)
+                    ]),
+                const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Gap(20),
+                      Icon(
+                        size: 30,
+                        Icons.logout,
+                      ),
+                      Text("：ログアウト", style: myPageTextStyle)
+                    ]),
+                const Gap(3),
               ],
             ),
-            Text("ログイン情報: $user"),
-            const Gap(30),
+            const Gap(10),
+            const Divider(),
+            ListTile(
+              title: const Text(
+                "今日の献立を提案します",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              minVerticalPadding: 20,
+              subtitle: const Text("登録済みのレシピからランダムに提案します"),
+              leading: const CircleAvatar(
+                radius: 30,
+                backgroundColor: CommonColors.primaryColor,
+                child: Icon(
+                  CommunityMaterialIcons.chef_hat,
+                  size: 40,
+                  color: CommonColors.subprimaryColor,
+                ),
+              ),
+              onTap: () {
+                myPageController.navigatorToRecipeDetailPageRandomly(
+                    context: context, user: user, recipes: recipes);
+              },
+            ),
+            const Divider(),
+            const Gap(20),
+            const Text("↓登録済みのレシピ一覧↓", style: myPageTextStyle),
             //レシピ表示部分．
             recipes.when(
               data: (recipes) {
@@ -186,40 +189,6 @@ class MyPage extends ConsumerWidget {
             const Gap(100),
           ],
         ),
-      ),
-      // 下ボタン
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        // アイコン設定
-        iconSize: 35,
-        selectedIconTheme:
-            const IconThemeData(color: CommonColors.subprimaryColor),
-        unselectedIconTheme:
-            const IconThemeData(color: CommonColors.subprimaryColor),
-        // ラベルの色設定をここで行う（統一する）
-        selectedItemColor: CommonColors.textColor,
-        unselectedItemColor: CommonColors.textColor,
-        // ラベルのTextstyle設定（fontSizeを統一させる）
-        selectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
-        unselectedLabelStyle: bottomNavigationBarItemLabelTextStyle,
-        // 背景色
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: CommonColors.primaryColor,
-        items: bottomNavigationBarItemList,
-        // タップされたボタンに応じて，画面遷移する．
-        onTap: (index) {
-          if (index == randomRecipePageValue) {
-            myPageController.navigatorByBottomNavigationBarItem(
-              context: context,
-              index: index,
-              recipes: recipes,
-              user: user,
-            );
-          } else {
-            myPageController.navigatorByBottomNavigationBarItem(
-                context: context, index: index);
-          }
-        },
       ),
     );
   }
