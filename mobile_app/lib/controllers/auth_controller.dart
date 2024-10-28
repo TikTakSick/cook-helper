@@ -23,7 +23,7 @@ class AuthController {
     required email,
     required password,
   }) async {
-    String loginErrorMessage = "";
+    String loginMessage = "";
 
     // ログイン成功時の処理
     try {
@@ -34,22 +34,23 @@ class AuthController {
         return _authResponse(isSuccess: false);
       } else if (user.emailVerified == false) {
         // verifyEmailModeでメールアドレスが検証されていない場合も失敗とする．
-        loginErrorMessage = "メールアドレスが検証されていません";
-        debugPrint(loginErrorMessage);
-        return _authResponse(isSuccess: false, message: loginErrorMessage);
+        loginMessage = "メールアドレスが検証されていません";
+        debugPrint(loginMessage);
+        return _authResponse(isSuccess: false, message: loginMessage);
       }
-      debugPrint("ログインしました:\n ${user.email} , ${user.uid}");
+      debugPrint("loginMessage: ${user.email} , ${user.uid}");
       return _authResponse();
       // ログイン失敗時の操作
     } on FirebaseAuthException catch (e) {
+      debugPrint("ログイン失敗: ${e.code}");
       if (e.code == "invalid-credential") {
-        loginErrorMessage = "ユーザが見つかりません";
-        debugPrint(loginErrorMessage);
+        loginMessage = "ユーザが見つかりません";
+        debugPrint(loginMessage);
       } else if (e.code == 'wrong-password') {
-        loginErrorMessage = "パスワードが無効であるか、パスワードが設定されていません。";
-        debugPrint(loginErrorMessage);
+        loginMessage = "パスワードが無効であるか、パスワードが設定されていません。";
+        debugPrint(loginMessage);
       }
-      return _authResponse(isSuccess: false, message: loginErrorMessage);
+      return _authResponse(isSuccess: false, message: loginMessage);
     } catch (e) {
       return _authResponse(isSuccess: false, message: e.toString());
     }
@@ -88,17 +89,14 @@ class AuthController {
     String message = "";
     // ログイン処理機能を利用してユーザを取得し，メールアドレス確認メールを送信する．
     try {
-      // ユーザを取得
       final User? user =
           await _authService.login(email: email, password: password);
-      // ユーザがnullの場合，失敗とする．
       if (user == null) {
         return _authResponse(isSuccess: false);
       }
       // メールがすでに検証されている場合
       else if (user.emailVerified == true) {
         message = "対象のメールアドレスは，検証済みです";
-        debugPrint(message);
         return _authResponse(isSuccess: true, message: message);
       }
       // メールアドレス確認メールを送信する．
@@ -108,7 +106,11 @@ class AuthController {
 
       // ログイン失敗時の操作
     } on FirebaseAuthException catch (e) {
-      if (e.code == "user-not-found") {
+      debugPrint(e.code);
+      if (e.code == "too-many-requests") {
+        message = "しばらくしてから再度お試しください";
+        debugPrint(message);
+      } else if (e.code == "user-not-found") {
         message = "ユーザが見つかりません";
         debugPrint(message);
       } else if (e.code == 'wrong-password') {
