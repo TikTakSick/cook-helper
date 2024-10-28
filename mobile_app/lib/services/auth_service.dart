@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class AuthService {
   // プロパティ値
@@ -23,7 +22,6 @@ class AuthService {
 
   // メールアドレス確認
   Future<void> sendEmailVerification({required User user}) async {
-    debugPrint("メールアドレス確認メールを送信します: ${user.email.toString()}");
     await user.sendEmailVerification();
   }
 
