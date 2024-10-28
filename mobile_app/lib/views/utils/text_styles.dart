@@ -7,6 +7,8 @@ const TextStyle recipeAttributeTextStyle = TextStyle(fontSize: 25);
 
 const TextStyle recipeDetailTextStyle = TextStyle(fontSize: 18);
 
+const TextStyle myPageTextStyle =
+    TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 // Page Title TextStyle
 const TextStyle pageTitleTextStyle =
     TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
