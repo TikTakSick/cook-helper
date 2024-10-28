@@ -7,7 +7,7 @@ import 'package:gap/gap.dart';
 // views
 import '../dialogs/add_recipe_to_firestore_result_dialog.dart';
 
-// //utils
+// utils of views
 import '../utils/page_title.dart';
 import '../utils/colors.dart';
 import '../utils/text_styles.dart';
