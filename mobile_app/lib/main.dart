@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'providers/my_app_router_provider.dart';
+
+// firebase settings
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+// ShareExtension settings
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
-
-// views
-import 'views/pages/my_page.dart';
-import 'views/pages/login_page.dart';
-
-// providers
-import 'providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,17 +21,18 @@ void main() async {
 }
 
 // MyApp
-class MyApp extends StatefulWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  ConsumerState<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> {
   late StreamSubscription _intentDataStreamSubscription;
   String? sharedWebRecipeUrl;
 
+  // private methods
   bool _isUrlSharedMediaType({required SharedFile? sharedFile}) {
     return sharedFile?.type == SharedMediaType.URL;
   }
@@ -48,9 +46,12 @@ class _MyAppState extends State<MyApp> {
         _isUrlValuePresent(sharedFile: sharedFile);
   }
 
-  void _setSharedWebRecipeUrl({required List<SharedFile> sharedFileList}) {
+  // set sharedWebRecipeUrl if an element of sharedFileList is a URL
+  void _setSharedWebRecipeUrl({required List<SharedFile>? sharedFileList}) {
     setState(() {
-      if (_isUrlValid(sharedFile: sharedFileList[0])) {
+      if (sharedFileList == null || sharedFileList.isEmpty) {
+        return;
+      } else if (_isUrlValid(sharedFile: sharedFileList[0])) {
         sharedWebRecipeUrl = sharedFileList[0].value;
         debugPrint("Shared: setSharedWebRecipeUrl $sharedWebRecipeUrl");
       }
@@ -63,8 +64,7 @@ class _MyAppState extends State<MyApp> {
     // For sharing data coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = FlutterSharingIntent.instance
         .getMediaStream()
-        .listen((List<SharedFile> sharedFileList) {
-      // set sharedWebRecipeUrl if an element of sharedFileList is a URL
+        .listen((List<SharedFile>? sharedFileList) {
       _setSharedWebRecipeUrl(sharedFileList: sharedFileList);
     }, onError: (err) {
       debugPrint("getIntentDataStream error: $err");
@@ -72,8 +72,7 @@ class _MyAppState extends State<MyApp> {
 
     // For sharing data coming from outside the app while the app is closed
     FlutterSharingIntent.instance.getInitialSharing().then(
-        (List<SharedFile> sharedFileList) {
-      // set sharedWebRecipeUrl if an element of sharedFileList is a URL
+        (List<SharedFile>? sharedFileList) {
       _setSharedWebRecipeUrl(sharedFileList: sharedFileList);
     }, onError: (err) {
       debugPrint("getInitialSharing error: $err");
@@ -82,10 +81,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Home(
-        sharedWebRecipeUrl: sharedWebRecipeUrl,
-      ),
+    final myAppRouter = ref.watch(myAppRouterProvider(sharedWebRecipeUrl));
+    return MaterialApp.router(
+      title: 'Cook Helper',
+      routerConfig: myAppRouter,
     );
   }
 
@@ -93,28 +92,5 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _intentDataStreamSubscription.cancel();
     super.dispose();
-  }
-}
-
-// Home
-class Home extends ConsumerWidget {
-  final String? sharedWebRecipeUrl;
-
-  const Home({
-    super.key,
-    this.sharedWebRecipeUrl,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 認証状態に応じて画面遷移する．
-    final authState = ref.watch(authUserChangesProvider);
-    return authState.when(
-      data: (user) => (user != null && user.emailVerified)
-          ? MyPage(sharedWebRecipeUrl: sharedWebRecipeUrl)
-          : const LoginPage(),
-      loading: () => const CircularProgressIndicator(),
-      error: (err, stack) => Text("Error: $err"),
-    );
   }
 }
