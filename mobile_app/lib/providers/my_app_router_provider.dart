@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'auth_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// providers
+import 'shared_recipe_url_provider.dart';
+import 'auth_provider.dart';
 
 // views
 import '../views/pages/my_page.dart';
@@ -10,12 +13,11 @@ import '../views/pages/recipe_add_page.dart';
 import '../views/pages/setting_page.dart';
 import '../views/bottom_navigation_settings.dart';
 
-final myAppRouterProvider = Provider.autoDispose
-    .family<GoRouter, String?>((ref, String? sharedRecipeUrl) {
-  sharedRecipeUrl = sharedRecipeUrl;
+final myAppRouterProvider = Provider.autoDispose<GoRouter>((ref) {
   final rootNavigatorKey = GlobalKey<NavigatorState>();
   final shellNavigatorKey = GlobalKey<NavigatorState>();
 
+  // 認証関連のプロパティを監視
   final (authloading, authHasError, userEmailVerified, userNotExist) =
       ref.watch(
     authUserChangesProvider.select(
@@ -29,11 +31,18 @@ final myAppRouterProvider = Provider.autoDispose
       },
     ),
   );
+  // 共有されたレシピのURL
+  final sharedRecipeUrl = ref.watch(sharedRecipeUrlProvider);
+  bool handleSharedRecipeUrl = (sharedRecipeUrl != null ? true : false);
 
+  // return 部分
   return GoRouter(
     initialLocation: '/login-page',
     navigatorKey: rootNavigatorKey,
-    errorBuilder: (context, state) => Text("Error: ${state.error}"),
+    errorBuilder: (context, state) {
+      debugPrint("Error: ${state.error}");
+      return Text("Error: ${state.error}");
+    },
     routes: <RouteBase>[
       GoRoute(
         name: 'login-page',
@@ -89,18 +98,14 @@ final myAppRouterProvider = Provider.autoDispose
         return "/login-page";
       } else if (!userEmailVerified) {
         return "/login-page";
-      } else if (sharedRecipeUrl != null) {
-        final sharedRecipeUrlForQueryParameter = sharedRecipeUrl;
-        debugPrint("sharedRecipeUrl: $sharedRecipeUrlForQueryParameter");
-        sharedRecipeUrl = null;
+      } else if (handleSharedRecipeUrl) {
+        debugPrint("redirecting to recipe-add-page");
+        handleSharedRecipeUrl = false;
         return state.namedLocation(
           'recipe-add-page',
-          queryParameters: {
-            'sharedRecipeUrl': sharedRecipeUrlForQueryParameter!
-          },
+          queryParameters: {'sharedRecipeUrl': sharedRecipeUrl!},
         );
       } else if (presentLocation == '/login-page') {
-        debugPrint("isLogining: true");
         return '/my-page';
       }
       return null;
