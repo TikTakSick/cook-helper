@@ -36,17 +36,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   String? sharedRecipeUrl;
 
   // private methods
-  bool _isUrlSharedMediaType({required SharedFile? sharedFile}) {
-    return sharedFile?.type == SharedMediaType.URL;
-  }
 
-  bool _isUrlValuePresent({required SharedFile? sharedFile}) {
+  bool _isValuePresent({required SharedFile? sharedFile}) {
     return sharedFile?.value != null;
-  }
-
-  bool _isUrlValid({required SharedFile? sharedFile}) {
-    return _isUrlSharedMediaType(sharedFile: sharedFile) &&
-        _isUrlValuePresent(sharedFile: sharedFile);
   }
 
   String? _findUrlInValueOfSharedFile({required SharedFile? sharedFile}) {
@@ -61,7 +53,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     setState(() {
       if (sharedFileList == null || sharedFileList.isEmpty) {
         return;
-      } else if (_isUrlValid(sharedFile: sharedFileList.last)) {
+      } else if (_isValuePresent(sharedFile: sharedFileList.last)) {
         final sharedFile = sharedFileList.last;
         sharedRecipeUrl = _findUrlInValueOfSharedFile(sharedFile: sharedFile);
         debugPrint("setSharedWebRecipeUrl $sharedRecipeUrl");
