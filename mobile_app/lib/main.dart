@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+// providers
 import 'providers/my_app_router_provider.dart';
+import 'providers/shared_recipe_url_provider.dart';
 
 // firebase settings
 import 'package:firebase_core/firebase_core.dart';
@@ -30,7 +33,7 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   late StreamSubscription _intentDataStreamSubscription;
-  String? sharedWebRecipeUrl;
+  String? sharedRecipeUrl;
 
   // private methods
   bool _isUrlSharedMediaType({required SharedFile? sharedFile}) {
@@ -46,14 +49,24 @@ class _MyAppState extends ConsumerState<MyApp> {
         _isUrlValuePresent(sharedFile: sharedFile);
   }
 
+  String? _findUrlInValueOfSharedFile({required SharedFile? sharedFile}) {
+    final String? value = sharedFile!.value;
+    final RegExp urlRegex = RegExp(r"(https?://[^\s]+)");
+    final match = urlRegex.firstMatch(value!);
+    return match?.group(0) ?? '';
+  }
+
   // set sharedWebRecipeUrl if an element of sharedFileList is a URL
   void _setSharedWebRecipeUrl({required List<SharedFile>? sharedFileList}) {
     setState(() {
       if (sharedFileList == null || sharedFileList.isEmpty) {
         return;
-      } else if (_isUrlValid(sharedFile: sharedFileList[0])) {
-        sharedWebRecipeUrl = sharedFileList[0].value;
-        debugPrint("Shared: setSharedWebRecipeUrl $sharedWebRecipeUrl");
+      } else if (_isUrlValid(sharedFile: sharedFileList.last)) {
+        final sharedFile = sharedFileList.last;
+        sharedRecipeUrl = _findUrlInValueOfSharedFile(sharedFile: sharedFile);
+        debugPrint("setSharedWebRecipeUrl $sharedRecipeUrl");
+        // update sharedRecipeUrlProvider
+        ref.read(sharedRecipeUrlProvider.notifier).set(value: sharedRecipeUrl!);
       }
     });
   }
@@ -61,10 +74,12 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
+
     // For sharing data coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = FlutterSharingIntent.instance
         .getMediaStream()
         .listen((List<SharedFile>? sharedFileList) {
+      debugPrint("getIntentDataStream: $sharedFileList");
       _setSharedWebRecipeUrl(sharedFileList: sharedFileList);
     }, onError: (err) {
       debugPrint("getIntentDataStream error: $err");
@@ -81,7 +96,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final myAppRouter = ref.watch(myAppRouterProvider(sharedWebRecipeUrl));
+    final myAppRouter = ref.watch(myAppRouterProvider);
     return MaterialApp.router(
       title: 'Cook Helper',
       routerConfig: myAppRouter,
