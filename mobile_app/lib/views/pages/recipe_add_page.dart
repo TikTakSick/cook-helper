@@ -126,8 +126,7 @@ class RecipeAddPageState extends ConsumerState<RecipeAddPage> {
     if (urlValue == null || urlValue.isEmpty) {
       return '何も入力されてません';
       // 入力されたURLが，適切な場合
-    } else if (!Uri.parse(urlValue).isAbsolute ||
-        !Uri.parse(urlValue).hasAbsolutePath) {
+    } else if (!Uri.parse(urlValue).hasAbsolutePath) {
       return "不適切なURLです";
     }
     return null;
