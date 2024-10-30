@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-10-30T20:27:13.800Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="VEQzdPnuHzkY_ZW8Pgx3" version="21.7.5" type="device">
+<mxfile host="Electron" modified="2024-10-30T20:27:34.518Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="AsgFwsq13OhLTA9JIW3-" version="21.7.5" type="device">
   <diagram name="ページ1" id="M3AGiZzQhhlZPhkQvb1u">
     <mxGraphModel dx="1514" dy="1149" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -107,7 +107,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="r4U9AMSot-IcRnKY342J-133" value="&lt;span style=&quot;font-size: 18px;&quot;&gt;生成AIによるレシピデータの追加&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="qgEVVQASvOo5EFohjT_f-6">
-          <mxGeometry x="-279.99693449834405" y="149.99915446664653" as="geometry">
+          <mxGeometry x="-269.99693449834405" y="159.99915446664653" as="geometry">
             <mxPoint x="371" y="169" as="offset" />
           </mxGeometry>
         </mxCell>
