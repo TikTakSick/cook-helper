@@ -59,12 +59,26 @@ final myAppRouterProvider = Provider.autoDispose<GoRouter>((ref) {
         },
         routes: [
           GoRoute(
-              name: 'my-page',
-              path: '/my-page',
-              parentNavigatorKey: shellNavigatorKey,
-              builder: (BuildContext context, state) {
-                return const MyPage();
-              }),
+            name: 'my-page',
+            path: '/my-page',
+            parentNavigatorKey: shellNavigatorKey,
+            builder: (BuildContext context, state) {
+              return const MyPage();
+            },
+            redirect: (context, state) {
+              if (handleSharedRecipeUrl) {
+                final recipeUrlForQueryParameters = sharedRecipeUrl;
+                handleSharedRecipeUrl = false;
+                return state.namedLocation(
+                  'recipe-add-page',
+                  queryParameters: {
+                    'sharedRecipeUrl': recipeUrlForQueryParameters!
+                  },
+                );
+              }
+              return null;
+            },
+          ),
           GoRoute(
               name: 'recipe-add-page',
               path: '/recipe-add-page',
@@ -98,13 +112,6 @@ final myAppRouterProvider = Provider.autoDispose<GoRouter>((ref) {
         return "/login-page";
       } else if (!userEmailVerified) {
         return "/login-page";
-      } else if (handleSharedRecipeUrl) {
-        debugPrint("redirecting to recipe-add-page");
-        handleSharedRecipeUrl = false;
-        return state.namedLocation(
-          'recipe-add-page',
-          queryParameters: {'sharedRecipeUrl': sharedRecipeUrl!},
-        );
       } else if (presentLocation == '/login-page') {
         return '/my-page';
       }
