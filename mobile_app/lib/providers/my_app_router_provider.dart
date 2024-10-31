@@ -90,7 +90,7 @@ final myAppRouterProvider = Provider.autoDispose<GoRouter>((ref) {
       debugPrint("""\n
           user: ${userNotExist ? "no user" : "exists"}\n
           emailVerified: $userEmailVerified\n
-          presentLocation: ${state.matchedLocation}\n
+          presentLocation: $presentLocation\n
           sharedRecipeUrl: $sharedRecipeUrl\n
           """);
       if (authloading || authHasError || userNotExist) {
