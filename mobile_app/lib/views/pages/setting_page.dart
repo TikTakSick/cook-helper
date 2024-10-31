@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // views_utils
 import '../utils/page_title.dart';
@@ -12,15 +13,18 @@ import "../utils/button_styles.dart";
 import "../../controllers/pages/setting_page_controller.dart";
 import '../../controllers/auth_controller.dart';
 
-class SettingPage extends StatefulWidget {
+// providers
+import '../../providers/shared_recipe_url_provider.dart';
+
+class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
   final String titleName = "その他設定";
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  SettingPageState createState() => SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class SettingPageState extends ConsumerState<SettingPage> {
   // ログアウトボタン
   bool logOutButtonPressed = false;
   // 退会ボタン
@@ -66,6 +70,7 @@ class _SettingPageState extends State<SettingPage> {
                   });
                   authController.logOut();
                   if (mounted) {
+                    ref.read(sharedRecipeUrlProvider.notifier).clear();
                     context.go('/login-page');
                   }
                 },
@@ -85,6 +90,7 @@ class _SettingPageState extends State<SettingPage> {
                   final response = await authController.delete();
                   if (response["isSuccess"]) {
                     if (!context.mounted) return;
+                    ref.read(sharedRecipeUrlProvider.notifier).clear();
                     context.go('/login-page');
                   }
                   debugPrint(response["errorMessage"]);

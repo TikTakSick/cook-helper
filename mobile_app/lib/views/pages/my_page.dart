@@ -20,6 +20,7 @@ import '../../models/recipe_model.dart';
 // providers
 import "../../providers/recipes_provider.dart";
 import '../../providers/auth_provider.dart';
+import '../../providers/shared_recipe_url_provider.dart';
 
 // マイページ画面用Widget
 class MyPage extends ConsumerWidget {
@@ -72,6 +73,7 @@ class MyPage extends ConsumerWidget {
               } else if (!context.mounted) {
                 return;
               }
+              ref.read(sharedRecipeUrlProvider.notifier).clear();
               context.go('/login-page');
             },
           ),
