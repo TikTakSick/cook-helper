@@ -90,7 +90,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     final myAppRouter = ref.watch(myAppRouterProvider);
     final sharedRecipeUrlFromNotifier = ref.watch(sharedRecipeUrlProvider);
-    debugPrint("sharedRecipeUrl from this widget state: $sharedRecipeUrl");
+    debugPrint("sharedRecipeUrl from this _MyAppState: $sharedRecipeUrl");
     debugPrint(
         "sharedRecipeUrl from NotifierProvider: $sharedRecipeUrlFromNotifier");
     return MaterialApp.router(
