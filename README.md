@@ -45,8 +45,8 @@
 |モバイルアプリ|Flutter，Dart||
 | 認証 | Firebase Authentication| ユーザ管理．メールとパスワードでの認証 |
 |データベース | Firebase Firestore | 登録したレシピを管理 |
-| 生成AI | gemini | URLからレシピ情報を抽出する時に用いる |
-|その他バックエンド |Cloud Run functions (Python3) |①ユーザが削除された際にそのユーザに紐づくレシピデータを削除する．②生成AIによるレシピ作成を行う．|
+| 生成AI | Gemini API | URLからレシピ情報を生成する時に用いる |
+|その他バックエンド |Cloud Run functions (Python3) |①ユーザが削除された際にそのユーザに紐づくレシピデータを削除する．②生成AIを用いてURLからレシピ情報を自動生成し，Firestoreへ追加する．|
 
 
 ![System Architecture](system_architecture/system_architecture.png)
