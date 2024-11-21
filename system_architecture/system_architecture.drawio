@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-10-30T21:10:01.641Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="gndEUyF7gv3cn6qyrwgp" version="21.7.5" type="device">
+<mxfile host="Electron" modified="2024-11-21T15:58:30.641Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.7.5 Chrome/114.0.5735.289 Electron/25.8.1 Safari/537.36" etag="lZt_7JKgzfPKPPUr-kCJ" version="21.7.5" type="device">
   <diagram name="ページ1" id="M3AGiZzQhhlZPhkQvb1u">
     <mxGraphModel dx="984" dy="718" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -65,7 +65,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="qgEVVQASvOo5EFohjT_f-6" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;b&gt;Google &lt;/b&gt;Cloud Platform&lt;/font&gt;" style="fillColor=#F6F6F6;strokeColor=none;shadow=0;gradientColor=none;fontSize=14;align=left;spacing=10;fontColor=#717171;9E9E9E;verticalAlign=top;spacingTop=-4;fontStyle=0;spacingLeft=40;html=1;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="740" y="200" width="910" height="620" as="geometry" />
+          <mxGeometry x="740" y="200" width="910.0002737520128" height="620" as="geometry" />
         </mxCell>
         <mxCell id="qgEVVQASvOo5EFohjT_f-7" value="" style="shape=mxgraph.gcp2.google_cloud_platform;fillColor=#F6F6F6;strokeColor=none;shadow=0;gradientColor=none;" parent="qgEVVQASvOo5EFohjT_f-6" vertex="1">
           <mxGeometry width="23" height="20" relative="1" as="geometry">
@@ -73,7 +73,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="r4U9AMSot-IcRnKY342J-83" value="" style="group" parent="qgEVVQASvOo5EFohjT_f-6" vertex="1" connectable="0">
-          <mxGeometry x="574.4283413848632" y="229.88876350153154" width="335.5716586151369" height="76.55295824601004" as="geometry" />
+          <mxGeometry x="574.4283413848632" y="229.88876350153154" width="335.57193236714966" height="76.55295824601004" as="geometry" />
         </mxCell>
         <mxCell id="r4U9AMSot-IcRnKY342J-69" value="" style="strokeColor=#dddddd;shadow=1;strokeWidth=1;rounded=1;absoluteArcSize=1;arcSize=2;fontSize=20;container=0;" parent="r4U9AMSot-IcRnKY342J-83" vertex="1">
           <mxGeometry width="335.57" height="60" as="geometry" />
@@ -84,6 +84,9 @@
         <mxCell id="r4U9AMSot-IcRnKY342J-82" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gemini API&lt;/font&gt;" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="r4U9AMSot-IcRnKY342J-83" vertex="1">
           <mxGeometry x="55.09822866344606" y="4.997581815250686" width="128.9533011272142" height="29.985490891504114" as="geometry" />
         </mxCell>
+        <mxCell id="b44mch5LtKIrPGPqQeBs-3" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png;" parent="r4U9AMSot-IcRnKY342J-83" vertex="1">
+          <mxGeometry x="285.57193236714966" y="9.997381911977982" width="42.27" height="51.23" as="geometry" />
+        </mxCell>
         <mxCell id="r4U9AMSot-IcRnKY342J-104" value="" style="strokeColor=#dddddd;shadow=1;strokeWidth=1;rounded=1;absoluteArcSize=1;arcSize=2;" parent="qgEVVQASvOo5EFohjT_f-6" vertex="1">
           <mxGeometry x="117.23027375201289" y="69.9661454135096" width="410.30595813204513" height="59.97098178300823" as="geometry" />
         </mxCell>
@@ -91,6 +94,9 @@
           <mxGeometry width="30" height="24" relative="1" as="geometry">
             <mxPoint x="15" y="18" as="offset" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="b44mch5LtKIrPGPqQeBs-2" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png;" parent="r4U9AMSot-IcRnKY342J-104" vertex="1">
+          <mxGeometry x="352.77" y="4.419999999999959" width="42.27" height="51.23" as="geometry" />
         </mxCell>
         <mxCell id="r4U9AMSot-IcRnKY342J-110" value="" style="strokeColor=#dddddd;shadow=1;strokeWidth=1;rounded=1;absoluteArcSize=1;arcSize=2;" parent="qgEVVQASvOo5EFohjT_f-6" vertex="1">
           <mxGeometry x="117.23027375201289" y="449.7823633725617" width="410.30595813204513" height="59.97098178300823" as="geometry" />
@@ -162,6 +168,9 @@
             <mxPoint x="669.9999999999999" y="909.9999999999999" as="sourcePoint" />
             <mxPoint x="1437" y="1154.6" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="b44mch5LtKIrPGPqQeBs-1" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=https://s3.dualstack.us-east-2.amazonaws.com/pythondotorg-assets/media/community/logos/python-logo-only.png;" parent="1" vertex="1">
+          <mxGeometry x="1210.0002737520128" y="658.5261454135095" width="42.27" height="51.23" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
